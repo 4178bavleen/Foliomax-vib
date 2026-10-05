@@ -1,0 +1,130 @@
+/* ===== PREMIUM BUTTON ===== */
+.premium-btn {
+  background: linear-gradient(135deg, #324e31, #047857); /* dark green */
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(6, 95, 70, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* HOVER EFFECT */
+.premium-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(6, 95, 70, 0.45);
+}
+
+/* CLICK EFFECT */
+.premium-btn:active {
+  transform: scale(0.97);
+}
+
+/* SUBSCRIBE BUTTON (OUTLINE STYLE) */
+.premium-btn.outline {
+  background: transparent;
+  color: #065f46;
+  border: 2px solid #065f46;
+  box-shadow: none;
+}
+
+/* OUTLINE HOVER */
+.premium-btn.outline:hover {
+  background: linear-gradient(135deg, #324e31, #047857);
+  color: #ffffff;
+}
+
+/* OPTIONAL GLOW EFFECT */
+.premium-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255,255,255,0.2);
+  transform: skewX(-20deg);
+  transition: 0.5s;
+}
+
+.premium-btn:hover::after {
+  left: 130%;
+}
+
+
+
+/* ===== CARD DESIGN UPGRADE ===== */
+.fm-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 25px;
+  transition: all 0.35s ease;
+  border: 1px solid rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* HOVER MAGIC */
+.fm-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+/* TOP GLOW LINE */
+.fm-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, #10b981, #047857);
+}
+
+.fm-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  margin-left: 8px;
+}
+
+.premium-btn {
+  background: linear-gradient(135deg, #10b981, #324e31);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+  letter-spacing: 0.3px;
+}
+
+/* HOVER = WOW */
+.premium-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(16, 185, 129, 0.5);
+}
+
+/* CTA PULSE */
+.premium-btn.cta {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
+  70% { box-shadow: 0 0 0 15px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}

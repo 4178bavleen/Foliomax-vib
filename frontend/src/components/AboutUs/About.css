@@ -1,0 +1,183 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+.fmax-about-page {
+  font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+  background-color: #fbfbfd;
+  color: #1d1d1f;
+  overflow: hidden;
+  position: relative;
+  padding-bottom: 80px;
+}
+
+.fmax-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Background Glows */
+.fmax-bg-glow-1 {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%);
+  top: -200px;
+  left: -200px;
+}
+
+.fmax-bg-glow-2 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59,130,246,0.05), transparent 70%);
+  bottom: 0;
+  right: -100px;
+}
+
+/* Header */
+.fmax-header {
+  text-align: center;
+  padding: 80px 0 60px;
+}
+
+.fmax-header h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+.fmax-gradient-text {
+  background: linear-gradient(135deg, #0f172a, #324e31);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.fmax-subtitle {
+  font-size: 18px;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Grid */
+.fmax-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Card */
+.fmax-glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  padding: 40px;
+  border-radius: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+}
+
+.fmax-card-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.fmax-card-badge img {
+  width: 34px;
+  height: 34px;
+  opacity: 0.9;
+}
+
+.fmax-glass-card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.fmax-data-content {
+  line-height: 1.8;
+  font-size: 16px;
+  color: #475569;
+}
+
+/* Disclaimer */
+.fmax-disclaimer-box {
+  background: #324e31;
+  border-radius: 32px;
+  padding: 40px;
+  color: #cbd5e1;
+}
+
+.fmax-disclaimer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.fmax-disclaimer-line {
+  width: 40px;
+  height: 4px;
+  background: linear-gradient(90deg, #10b981, #38bdf8);
+  border-radius: 4px;
+}
+
+.fmax-disclaimer-header h4 {
+  color: #ffffff;
+  letter-spacing: 1px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.fmax-disclaimer-body {
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0.85;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .fmax-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================= */
+/* 🚀 Mission Image (Isolated v2) */
+/* ============================= */
+
+.fmxv2-mission-img-box {
+  margin-top: 22px;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.fmxv2-mission-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+/* Subtle premium overlay */
+.fmxv2-mission-overlay {
+  position: absolute;
+  inset: 0;
+ 
+}
+
+/* Smooth hover effect */
+.fmxv2-mission-img-box:hover .fmxv2-mission-img {
+  transform: scale(1.05);
+}

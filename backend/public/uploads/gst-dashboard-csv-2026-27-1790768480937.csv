@@ -1,0 +1,44 @@
+GST TRANSACTION & ITC REPORT
+Generated,11/9/2026, 5:36:20 pm
+Financial Year,2026-27
+Branch,All Branches
+GSTIN,All Registrations
+
+=== KEY METRICS ===
+Metric,Current,Previous,Change %
+Taxable Sales,21027,0,n/a
+Output GST,673.6,0,n/a
+Total Input GST,65,0,n/a
+Eligible ITC,65,0,n/a
+Ineligible ITC,0,0,0%
+ITC Reversal,0,0,0%
+Net GST Liability,608.6,0,n/a
+Total GST Paid,50,0,n/a
+Outstanding GST,558.6,0,n/a
+
+=== OUTPUT GST BREAKDOWN ===
+Component,Amount
+CGST,336.81
+SGST,336.79
+IGST,0
+Cess,0
+
+=== MONTHLY TREND ===
+Period,Taxable Sales,Output GST,CGST,SGST,IGST,Cess,Total Input GST,Eligible ITC,Ineligible ITC,Net Liability,Paid,Outstanding
+Apr 2026,0,0,0,0,0,0,0,0,0,0,0,0
+May 2026,0,0,0,0,0,0,0,0,0,0,0,0
+Jun 2026,0,0,0,0,0,0,0,0,0,0,0,0
+Jul 2026,0,0,0,0,0,0,0,0,0,0,0,0
+Aug 2026,0,0,0,0,0,0,0,0,0,0,0,0
+Sep 2026,21027,673.6,336.81,336.79,0,0,65,65,0,608.6,50,558.6
+Oct 2026,0,0,0,0,0,0,0,0,0,0,0,0
+Nov 2026,0,0,0,0,0,0,0,0,0,0,0,0
+Dec 2026,0,0,0,0,0,0,0,0,0,0,0,0
+Jan 2027,0,0,0,0,0,0,0,0,0,0,0,0
+Feb 2027,0,0,0,0,0,0,0,0,0,0,0,0
+Mar 2027,0,0,0,0,0,0,0,0,0,0,0,0
+
+=== BRANCH-WISE ===
+Branch,Taxable Sales,Output GST,Eligible ITC,Net Due
+Food Adda - Main Branch,20617,653.1,65,588.1
+Food Adda - Bandra,410,20.5,0,20.5

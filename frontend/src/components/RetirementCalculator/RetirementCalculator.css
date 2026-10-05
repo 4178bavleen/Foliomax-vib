@@ -1,0 +1,349 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f3f6f9;
+}
+
+/* Layout */
+.ret-wrapper {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px;
+}
+
+.main-title {
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+/* Steps */
+.steps {
+  display: flex;
+  margin-bottom: 25px;
+}
+
+.step {
+  flex: 1;
+  padding: 16px;
+  text-align: center;
+  background: #e5eaef;
+  color: #555;
+  font-size: 13px;
+  cursor: pointer;
+  clip-path: polygon(0 0, 92% 0, 100% 50%, 92% 100%, 0 100%, 8% 50%);
+}
+
+.step:not(:first-child) {
+  margin-left: -14px;
+}
+
+.step.active {
+  background: #324e31;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Content */
+.content-custom{
+  background: #f7f9fb;
+  border: 1px solid #d7dee7;
+  padding: 30px;
+}
+
+/* Section */
+.section-title {
+  font-size: 22px;
+  margin-bottom: 25px;
+  color: #1f2937;
+}
+
+/* Form */
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-row label {
+  width: 260px;
+  font-size: 17px;
+  color: #374151;
+  padding: 21px
+}
+
+/* Inputs */
+.input-box {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #cfd7e3;
+  border-radius: 3px;
+}
+
+.input-box span {
+  padding: 10px 14px;
+  background: #eef2f6;
+  border-right: 1px solid #cfd7e3;
+  font-size: 13px;
+}
+
+.input-box input {
+  border: none;
+  padding: 10px 14px;
+  width: 160px;
+  font-size: 14px;
+}
+
+.input-box input:focus {
+  outline: none;
+}
+
+/* Result */
+.result-box {
+  margin-top: 30px;
+  padding: 18px 22px;
+  background: #eaf2fb;
+  border: 1px solid #b6d4f2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.result-box strong {
+  font-size: 20px;
+  color: #1e40af;
+}
+
+/* Range */
+.range-wrap {
+  width: 100%;
+}
+
+.range-wrap span {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+/* Summary */
+.summary {
+  list-style: none;
+  padding: 0;
+}
+
+.summary li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Buttons */
+.nav {
+  margin-top: 35px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-primary {
+  background: #324e31;
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 14px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  border: none;
+  padding: 12px 28px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #238ac0;
+}
+
+
+.input-box.disabled input {
+  background: #eee;
+  cursor: not-allowed;
+}
+
+.select-box {
+  width: 200px;
+  padding: 10px 12px;
+  border: 1px solid #cfd7e3;
+  background: #fff;
+  font-size: 14px;
+}
+
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.methodology {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+
+
+
+/* Summary Actions */
+.summary-actions {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  color: #1d4ed8;
+  cursor: pointer;
+}
+
+/* Intro */
+.summary-intro {
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 30px;
+}
+
+.summary-intro .highlight {
+  color: #2563eb;
+}
+
+/* Cards */
+.summary-cards {
+  max-width: 520px;
+  margin-bottom: 40px;
+}
+
+.summary-card {
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.summary-card.primary {
+  background: #000000;
+  color: #fff;
+}
+
+.summary-card.secondary {
+  background: #f3f8ff;
+  border: 1px solid #b6d4f2;
+}
+
+/* Disclaimer */
+.disclaimer {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .summary-print,
+  .summary-print * {
+    visibility: visible;
+  }
+
+  .summary-actions,
+  .nav {
+    display: none !important;
+  }
+
+  .summary-print {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}
+
+
+
+/* ================= PDF / PRINT CLEAN THEME ================= */
+
+.summary-print {
+  background: #ffffff;
+  padding: 32px;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+/* Headings */
+.summary-print h2 {
+  color: #1f2937;
+  margin-bottom: 16px;
+}
+
+/* Intro text */
+.summary-print .summary-intro {
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+/* Cards */
+.summary-print .summary-card {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.summary-print .summary-card.primary {
+  background: #2563eb; /* clean blue */
+  color: #ffffff;
+}
+
+.summary-print .summary-card.secondary {
+  background: #f8fafc;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+}
+
+/* Remove icons/buttons from PDF */
+.summary-print .summary-actions,
+.summary-print button {
+  display: none !important;
+}
+
+/* Disclaimer */
+.summary-print .disclaimer {
+  font-size: 11px;
+  color: #374151;
+  line-height: 1.6;
+  margin-top: 24px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+/* ================= PRINT MODE ================= */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .summary-print,
+  .summary-print * {
+    visibility: visible;
+  }
+
+  .summary-print {
+    position: absolute;
+    inset: 0;
+  }
+}

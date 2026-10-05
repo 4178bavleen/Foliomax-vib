@@ -1,0 +1,195 @@
+/* ================= CONTAINER ================= */
+
+.tx-container {
+  padding: 32px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.tx-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 28px;
+  letter-spacing: -0.3px;
+}
+
+/* ================= SUMMARY ================= */
+
+.tx-summary {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.tx-card {
+  flex: 1;
+  background: linear-gradient(145deg, #ffffff, #f9fbff);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(16, 24, 40, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tx-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(16, 24, 40, 0.1);
+}
+
+.tx-card p {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.tx-card h3 {
+  font-size: 26px;
+  margin-top: 10px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ================= TABLE ================= */
+
+.tx-table-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(16, 24, 40, 0.08);
+}
+
+.tx-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tx-table thead {
+  background: #f1f5f9;
+}
+
+.tx-table th {
+  text-align: left;
+  padding: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #475569;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.tx-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #334155;
+  border-top: 1px solid #f1f5f9;
+}
+
+.tx-table tbody tr:nth-child(even) {
+  background: #fafbff;
+}
+
+.tx-table tbody tr:hover {
+  background: #eef2ff;
+  transition: background 0.2s ease;
+}
+
+/* ================= BADGES ================= */
+
+.status {
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.status.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.status.failed {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.status.pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+
+/* ================= METHOD BADGE ================= */
+
+.method {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ================= AMOUNT ================= */
+
+.amount {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ================= ORDER ID ================= */
+
+.order-id {
+  font-size: 12px;
+  color: #64748b;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+/* ================= PAGINATION ================= */
+
+.tx-pagination {
+  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.tx-pagination button {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.tx-pagination button:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.tx-pagination button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.tx-pagination span {
+  font-size: 13px;
+  color: #475569;
+}
+
+/* ================= LOADING ================= */
+
+.tx-loading {
+  padding: 30px;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+}

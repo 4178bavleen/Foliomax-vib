@@ -1,0 +1,82 @@
+.tv-ticker-wrapper {
+  width: 100%;
+  overflow: hidden;
+  background: transparent;
+  padding: 10px 0;
+  /* border-bottom: 1px solid #222; */
+}
+
+.tv-ticker {
+  display: flex;
+  width: max-content;
+  animation: tv-scroll 320s linear infinite;
+}
+
+.tv-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: transparent;
+  border-radius: 6px;
+  margin-right: 14px;
+  font-size: 13px;
+  color: #ddd;
+}
+
+.tv-logo {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #222;
+}
+
+.tv-symbol {
+  font-weight: 600;
+  color: #fff;
+}
+
+.tv-price {
+  color: #e0e0e0;
+}
+
+.tv-up {
+  color: #00c853;
+  font-weight: 500;
+}
+
+.tv-down {
+  color: #ff5252;
+  font-weight: 500;
+}
+
+.tv-separator {
+  color: #555;
+  margin-left: 6px;
+}
+
+@keyframes tv-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pause on hover like TradingView */
+.tv-ticker-wrapper:hover .tv-ticker {
+  animation-play-state: paused;
+}
+
+.tv-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  background: transparent;
+  border-radius: 6px;
+  margin-right: 14px;
+  font-size: 13px;
+  color: #ddd;
+}

@@ -1,0 +1,178 @@
+/* PrivacyPolicy.css */
+
+.privacy-wrapper {
+  padding: 60px 0 80px;
+  background: #f6f8fb;
+}
+
+/* Card container */
+.privacy-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 48px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+/* Main layout */
+.privacy-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+  gap: 40px;
+}
+
+/* Mobile / tablet */
+@media (max-width: 991px) {
+  .privacy-wrapper {
+    padding: 40px 0 60px;
+  }
+  .privacy-card {
+    padding: 28px 22px;
+  }
+  .privacy-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Typography */
+.privacy-kicker {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #00a86b;
+  margin-bottom: 8px;
+}
+
+.privacy-main-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.privacy-subtitle {
+  max-width: 640px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.privacy-updated {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 28px;
+}
+
+/* Section blocks */
+.policy-block {
+  padding-top: 22px;
+  border-top: 1px solid #edf0f7;
+}
+
+.policy-block:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.policy-number {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.policy-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.policy-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 10px;
+}
+
+/* Clean list */
+.policy-list {
+  margin: 8px 0 6px;
+  padding-left: 18px;
+}
+
+.policy-list li {
+  margin-bottom: 6px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4b5563;
+}
+
+.policy-list li strong {
+  color: #111827;
+}
+
+/* Sidebar */
+.privacy-sidebar {
+  align-self: flex-start;
+}
+
+.side-nav {
+  background: #ffffff;
+  padding: 22px 20px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  position: sticky;
+  top: 110px;
+}
+
+.side-nav-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #111827;
+}
+
+.side-nav ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.side-nav li {
+  margin-bottom: 8px;
+}
+
+.side-nav a {
+  font-size: 14px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.side-nav a:hover {
+  text-decoration: underline;
+}
+
+/* Contact box inside sidebar */
+.sidebar-box {
+  margin-top: 18px;
+  padding: 12px 12px;
+  border-radius: 10px;
+  background: #f3f4ff;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.sidebar-box strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Back to top button */
+.privacy-back-top {
+  margin-top: 16px;
+  width: 100%;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPO Market Watch</title>
+
+  <style>
+    body {
+      font-family: Poppins, Arial, sans-serif;
+      background: #f5f7fa;
+      padding: 20px;
+    }
+
+    .widget-container {
+      max-width: 1000px;
+      margin: auto;
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="widget-container">
+    <blockquote
+      class="trendlyne-widgets"
+      data-get-url="https://trendlyne.com/web-widget/ipo-widget/Poppins/?activeCol=006AFF&linksCol=006CFF&primary=202020&secondary=666666&positive=00a25b&negative=ff4e54"
+      data-theme="light">
+    </blockquote>
+  </div>
+
+  <!-- Load once -->
+  <script
+    async
+    src="https://cdn-static.trendlyne.com/static/js/webwidgets/tl-widgets.js"
+    charset="utf-8">
+  </script>
+<!-- Investing.com chart widget -->
+<iframe src="https://www.investing.com/webmaster-tools/technical-charts?pair_ID=all-your-settings" width="600" height="400"></iframe>
+
+</body>
+</html>

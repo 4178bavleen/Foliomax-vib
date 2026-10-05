@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" style="margin:0;padding:0;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your OTP Code</title>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f4f6fb;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #1f2937;
+  }
+
+  .wrapper {
+    width: 100%;
+    padding: 30px 0;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+  }
+
+  .header {
+    text-align: center;
+    padding: 28px 20px 10px;
+    border-bottom: 1px solid #eef1f6;
+  }
+
+  .logo img {
+    width: 120px;
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 15px 0 5px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  .content {
+    padding: 30px 28px;
+    text-align: center;
+  }
+
+  .otp-box {
+    margin: 25px 0;
+    font-size: 34px;
+    letter-spacing: 8px;
+    font-weight: 700;
+    color: #2563eb;
+    background: #f1f5ff;
+    padding: 18px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+
+  .note {
+    margin-top: 18px;
+    padding: 12px;
+    background: #fff7ed;
+    border-left: 4px solid #f59e0b;
+    font-size: 13px;
+    border-radius: 6px;
+    text-align: left;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: #9ca3af;
+    border-top: 1px solid #eef1f6;
+  }
+
+  .footer a {
+    color: #2563eb;
+    text-decoration: none;
+    margin: 0 6px;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      border-radius: 0;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="logo">
+        <img src="{{logoUrl}}" alt="Foliomax">
+      </div>
+      <div class="title">Your Login OTP</div>
+      <div class="subtitle">
+        Hi {{name}}, use this code to login securely
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <p>Your One-Time Password (OTP) is:</p>
+
+      <div class="otp-box">
+        {{otp}}
+      </div>
+
+      <p>This OTP is valid for <strong>5 minutes</strong>.</p>
+
+      <div class="note">
+        ⚠️ Do not share this OTP with anyone. Foliomax will never ask for your OTP.
+      </div>
+
+      <p style="margin-top:20px;">
+        If you didn’t request this, you can safely ignore this email.
+      </p>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      © {{year}} Foliomax. All rights reserved.
+      <br>
+      <a href="{{privacyLink}}">Privacy</a> |
+      <a href="{{securityLink}}">Security</a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

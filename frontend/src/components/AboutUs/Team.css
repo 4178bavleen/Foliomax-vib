@@ -1,0 +1,116 @@
+/* =========================
+   TEAM POPUP MODAL
+========================= */
+
+.clickable {
+  cursor: pointer;
+}
+
+.team-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.team-modal {
+  background: #fff;
+  max-width: 500px;
+  width: 90%;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  animation: scaleIn 0.3s ease;
+}
+
+.modal-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  background: #1e2f1e;
+}
+
+.modal-role {
+  display: block;
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.modal-description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #555;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}
+
+.info-btn-box {
+  margin-top: 18px;
+  justify-content: center;
+}
+
+/* PREMIUM BUTTON */
+.premium-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  background: rgba(46, 204, 113, 0.08);
+  color: #1e7e34;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+/* ICON */
+.premium-btn .icon {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* HOVER MAGIC */
+.premium-btn:hover {
+  background: #2ecc71;
+  color: #fff;
+  border-color: #2ecc71;
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+  transform: translateY(-2px);
+}
+
+/* CLICK EFFECT */
+.premium-btn:active {
+  transform: scale(0.96);
+}

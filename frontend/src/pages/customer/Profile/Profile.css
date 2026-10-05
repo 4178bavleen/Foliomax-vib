@@ -1,0 +1,81 @@
+.profile-container {
+  padding: 30px;
+  max-width: 850px;
+  margin: auto;
+}
+
+.profile-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.profile-card {
+  display: flex;
+  gap: 30px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.profile-img-section {
+  text-align: center;
+}
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0a4bff;
+  margin-bottom: 10px;
+}
+
+.upload-btn {
+  background: #0a4bff;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.profile-form {
+  width: 100%;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.field input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+}
+
+.readonly {
+  background: #f3f3f3;
+  cursor: not-allowed;
+}
+
+.save-btn {
+  background: #0a4bff;
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
