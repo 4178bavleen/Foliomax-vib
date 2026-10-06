@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { MdModeEdit, MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
+import { authHeaders } from "../../lib/authHeaders";
 
 type Company = {
   id: number | string;
@@ -136,6 +137,7 @@ const EditQuizModal: React.FC<EditQuizModalProps> = ({
         method: "PATCH", // change to "PATCH" if your backend uses PATCH
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders(),
         },
         body: JSON.stringify(payload),
       });
@@ -505,6 +507,7 @@ const AllQuizzes: React.FC = () => {
       setRowActionLoadingId(quiz.id);
       const res = await fetch(API.DELETE_QUIZ(quiz.id), {
         method: "DELETE",
+        headers: authHeaders(),
       });
 
       if (!res.ok) {

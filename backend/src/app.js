@@ -77,6 +77,7 @@ const blogCategoryRoutes = require("./routes/Admin/Blog/blogCategoryRoutes");
 const blogRoutes = require("./routes/Admin/Blog/blogRoutes");
 const insightsCategoryRoutes =require("./routes/Admin/Etf&MutualFund/insightsCategoryRoutes");
 const insightsRoutes =require("./routes/Admin/Etf&MutualFund/insightsRoutes");
+const learnRoutes = require("./routes/Admin/Learn/learnRoutes");
 
 // const questionRoutes = require("./routes/Admin/Quiz/questionRoutes");
 // Rate limit login: max 5 requests in 15 mins
@@ -111,6 +112,7 @@ app.use("/foliomax/blogs", blogRoutes);
 
 app.use("/foliomax/insights-categories",insightsCategoryRoutes);
 app.use("/foliomax/insights",insightsRoutes);
+app.use("/foliomax/learn", learnRoutes);
 app.use("/foliomax/admin/video", vedioRoutes);
 app.use('/foliomax/admin/pdf', pdfRoutes);
 app.use('/foliomax/admin/',statsRoutes);

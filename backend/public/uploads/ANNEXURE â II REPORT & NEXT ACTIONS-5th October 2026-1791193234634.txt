@@ -1,0 +1,402 @@
+ANNEXURE – II REPORT & NEXT ACTIONS
+
+Duration: 5th September 2026 – 9th October  2026
+
+_____________________________________________________________
+ Shalini :
+
+Urgent:
+
+ERP Software :
+
+1:Odd/Even: Complete the Odd/Even functionality after the current work has been completed.
+2:Passout Students: Move pass out students to the Alumni section once the team has marked them and final clearance is completed.
+3:SaaS Implementation: Implement the SaaS requirements as per the discussion.
+4: New Implementation of ERP
+
+
+Sb Pipe:
+
+1:Landing Page: Customize the landing page as per the discussion and requirements.
+2:Audit & Testing: Conduct a complete audit and testing of the system to identify and resolve any issues.
+3:Module Documentation: Complete the documentation for all modules as per the defined requirements.
+4: SaaS: Review, test, and ensure the SaaS functionality is working properly.
+
+----------------------
+Admit Flow :
+
+1:Security & Audit Checking: Conduct a complete security audit and system-level checking to identify and resolve any security or compliance issues.
+2: Module Documentation: Complete the documentation for all modules as per the defined requirements and workflow.
+3: White-Label Admission Flow: Implement the white-label admission flow as discussed, including the required customization and branding.
+
+
+MLM VSR:
+
+1:Module Completion & Verification: Ensure all modules are fully completed and functioning properly.
+2:MLM White-Labeling: Implement white-labeling for the MLM system as discussed.
+3:Module Documentation: Complete the documentation for all modules, covering the respective features, workflows, and requirements.
+4:MLM Landing Pages: Design and implement the required landing pages for the MLM system.
+5:Audit & Testing: Conduct comprehensive system audit and testing to ensure functionality, security, and overall system stability.
+
+
+DRIT 
+
+1:ERP setup and execution
+
+-------------------------------------------------
+
+Yash:
+
+
+
+VCN MLM
+
+1:MOM & Meeting Changes: Implement all changes discussed in the MOM and meetings. Final delivery target: 10th September.
+
+2: MLM Login & Registration: Implement separate login and registration flows for Sellers and Customers.
+
+VCN MLM Add-ons – Third-Party Tools
+->Tally Integration
+->MSG91 Integration
+->Email System Integration
+->Aadhaar-Based Login
+->Razorpay Payment Gateway Integration
+->AI Chatbot Integration
+
+MLM UI
+1: MLM UI implementation will be taken up at a later stage.
+
+2: Quotender
+Requirement Changes: Implement the required changes in Quotender as per the discussed requirements.
+
+
+
+New Project :
+
+1:Healthcare  (start by 15 October)---Pharma ERP — Core with Mayank
+2:HRMS and payroll need to final documentation
+
+
+Deployment:
+
+1:Company .in website redirect to .com
+
+
+----------------------------------------------------------------------------------------------------------
+Project Super Vision:
+
+1:DVEPL CRM & Invoice Management: Complete the development and implementation of the DVEPL CRM and Invoice Management system.
+2:Churi House Software: Complete the required development and implementation of the Churi House software.
+3:HRMS and Payroll by Gabrial and Bavleen
+
+
+
+-----------------------------------------------------------
+
+Saina:
+
+Priority Testing Projects:
+
+Primary Priority:
+
+1:Bhojan Bandhu 
+2:MP MLA
+3: Lending Cart USA
+
+Secondary Priority:
+
+1:VSR MLM
+2:SB Pipe
+3:KYP5
+4: College Enroll
+
+Other Work
+1: Testing & Git Project Tracking: Prepare an Excel sheet containing all Git projects and maintain a consolidated testing/status tracking sheet
+
+
+-----------------------------------------------------------
+Akanksha Rai
+
+Primary Work:
+
+
+1:MP MLA Data Work: Complete the required data work for MP MLA in coordination with Aakanksha.
+2: College Enroll Data Upload: Upload and update the required data for College Enroll with Akanksha
+
+
+
+-----------------------------------------------------------
+
+
+Kamlesh:
+
+Work:
+
+1:MP MLA Data Work: Complete the required data work for MP MLA in coordination with Aakanksha.
+2: College Enroll Data Upload: Upload and update the required data for College Enroll with Akanksha
+
+
+Maintenance:
+
+1: ERP new data need to add
+
+-----------------------------------------------------------
+
+Tushar: 
+
+Lending Cart:
+
+
+1:Architecture Discussion: Finalize and document the system architecture as per the discussion.
+2:GHL Discussion: Discuss and finalize the required GHL features, workflows, and implementation approach.
+3:Training to Kamlesh and saina for support portal
+4:work on pending module of Loan automation software
+
+
+Note:
+
+1:Support email with info email for user helpline
+2:Whatsapp Number integration for helpline with chatbot
+
+-----------------------------------------------------------
+
+
+New Developer kanika <>shivani: 
+
+
+
+1. WhatsApp SaaS
+
+1:Settings Implementation: Implement and configure all required settings.
+2:Landing Page: Develop the WhatsApp SaaS landing page based on the provided SwiftChats reference.
+3:UI & Settings: Fix and finalize all UI elements and settings as per the provided SwiftChats demo reference.
+4:Idea & Login Panel: Implement the required idea and login panel based on the provided reference.
+5:Module Documentation: Complete the documentation for all WhatsApp SaaS modules.
+
+Use the following references for the WhatsApp SaaS landing page and overall UI/UX:
+
+https://swiftchats.com/demo
+
+https://wapi-front-red.vercel.app/landing
+
+_
+2. Social Block SaaS:
+
+Implement the following features:
+
+a:Page & Group Selection
+b:Custom Page Selection UI
+c:Scheduling UI — based on Buffer-style functionality.
+d:Facebook Page Connection Loader — display a loader while connecting Facebook pages.
+e:Post Preview Feature
+f:Disconnect Page via Typed Command
+g: Reel & Story Upload Integration
+
+Reference:
+
+1:https://postuno.igensolutionsltd.com/user/platform/index
+2:https://demo.stackposts.com/stackposts/portal/channels
+
+
+-----------------------------------------------------------
+
+Mayank: 
+
+
+MP MLA
+
+1:Check all the pages is working fine
+2:All email and WhatsApp Integration is working mode
+3:All login and module is working mode
+4:social media and website add is working
+5:Scheme and help line need to show inside voters login
+6:All social media analytics is working mode
+7:Saas is working module with invoice pdf
+8:All plan is working with payment gateways as discussed  in term of storage
+9: WhatsApp is also working with reminders
+10:Marketing ppt need to prepare
+
+KYP5
+
+1:All saas and email with WhatsApp is working mode
+2:Test with result in working mode
+3:Website is dynamic with working mode
+4:all the institution login is working mode
+5:All reporting as per user requirement 
+6:Forgot password and all login mode is working and tested mode.
+7:Billing and subscription is working mode
+8:billing pdf as per requirement 
+9:all the website and admin panel need to tested with working mode
+10:Marketing ppt need to prepare
+
+
+Dr Manoj Kumar personal website 
+
+1:Make as per AI mix website 
+2:Based on shvivek.com (only take menu name for idea)
+
+Chai Bro
+
+1:Make as per discussion
+2:Change the menu and color as per logo
+3:Deadline by 7 August 
+
+.............................................................
+Gabriel
+
+1. VCN Website:
+
+->Dashboard Integration: Integrate the website with the dashboard.
+-Complete all the UI and layout of pages as per deadline
+->Connect with backend as per decided
+->Check Complete UI and Responsive as per discussion
+->Make sure all the links and pages is working
+
+
+Bhojan Bandhu
+
+1:UI of online odder and add integration page
+2:Landing page responsive
+3:Final price and package of pos
+4:Whatsapp start message to users
+5:Swiggy and Zomato api
+6:chatbot proper prepare question plan
+7:email integration like forgot password 
+8:Email configuration working for users
+9:email creation and monitoring (support and info email id )
+10:Marketing ppt need to prepare
+
+
+3. DVPEL
+-> Complete project with WhatsApp integration 
+->Check and test all module by client
+->Make document after completion 
+
+
+New Project : (10th October)
+
+1: HRMS with Payroll (overview with shared document)
+
+Reference Link:  
+
+https://superworks.com/
+
+Company Website :
+
+-> Growu Australia 
+
+Reference website: 
+
+1:https://www.webomaze.com.au/ 
+
+2: https://www.ausasiaonline.com.au/
+
+
+.............................................................
+Bavleen :
+
+
+1. Foliomax:
+
+->Changes as per client meeting  and follow up with preety 
+
+
+Bhojan Bandhu
+
+1:UI of online odder and add integration page
+2:Landing page responsive
+3:Final price and package of pos
+4:Whatsapp start message to users
+5:Swiggy and Zomato api
+6:chatbot proper prepare question plan
+7:email integration like forgot password 
+8:Email configuration working for users
+9:email creation and monitoring (support and info email id )
+10:Marketing ppt need to prepare
+
+
+3. DVPEL
+-> Complete project with WhatsApp integration 
+->Check and test all module by client
+->Make document after completion 
+
+
+New Project : (10th October)
+
+1: HRMS with Payroll (overview with shared document)
+
+Reference Link:  
+
+https://superworks.com/
+
+.............................................................
+
+Balbinder Kaur <>simran:  
+
+New Website :
+
+1:Techno coderz website 
+2:Vibrantick New Website 
+3:digigenix website for company
+
+-------------------
+
+1: Techno coderz  website 
+
+
+Reference:
+
+
+https://learnup-shreethemes.netlify.app/home-4
+
+https://fistudy-laravel.mnsithub.com/
+
+https://dreamslms.dreamstechnologies.com/html/template/index.html
+
+
+2: Vibrantick new website
+
+
+Reference:
+
+https://toxsl.com/
+2:https://www.cssoftsolutions.com/
+3:https://richestsoft.com
+https://www.code-brew.com/
+https://www.webhopers.com
+
+
+Digigenix New company Reference:
+
+https://www.seodiscovery.com/
+
+https://www.webhopers.com/
+
+https://cyberlinkdigital.com/
+
+--------------------------------------------------------------
+Maintenance Team :
+
+Saina and Akanksha
+
+
+1	Topline Canada	Canada
+2	LCET Ludhiana	Punjab
+3	Arboargaurd New Zealand	New Zealand
+4	Aquaprime Canada	Canada
+5	Sanjay Rungta Group	India
+6	Jagannath Mandir Chandigarh	Chandigarh
+7	Shriwing International	Khajuraho, MP
+8	Anand Migration	Australia
+9	13 Melbourne Cab Services – Robin	Australia
+10	Booking Cabs Australia – Kiran Ji	Australia
+11	Maxpro	Hyderabad
+12	Kwatra Consulting 	Australia
+
+
+
+
+--------------------------------------------------------------------
+
+End of Annexure – II
+

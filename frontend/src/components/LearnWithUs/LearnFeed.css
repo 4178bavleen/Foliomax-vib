@@ -1,0 +1,93 @@
+/* Unified learn feed shell: pagination and error states */
+
+.lfeed {
+  position: relative;
+  z-index: 1;
+  padding: 20px 0 40px;
+  scroll-margin-top: 90px;
+  max-width: 100%;
+}
+
+/* ---------- pagination ---------- */
+
+.lfeed-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.lfeed-more-btn {
+  padding: 14px 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--lwu-border-rgb), 0.9);
+  background: var(--lwu-surface);
+  color: var(--lwu-text-primary);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.lfeed-more-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--lwu-theme), var(--lwu-emerald));
+  border-color: transparent;
+  box-shadow: 0 14px 30px rgba(var(--lwu-emerald-rgb), 0.25);
+}
+
+.lfeed-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lfeed-more-btn:focus-visible {
+  outline: 2px solid var(--lwu-emerald);
+  outline-offset: 3px;
+}
+
+.lfeed-end {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 14px;
+  color: var(--lwu-text-muted);
+}
+
+/* ---------- retry ---------- */
+
+.lfeed-retry {
+  margin-top: 20px;
+  padding: 12px 32px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, var(--lwu-theme), var(--lwu-emerald));
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.lfeed-retry:hover {
+  transform: translateY(-2px);
+}
+
+.lfeed-retry:focus-visible {
+  outline: 3px solid var(--lwu-emerald);
+  outline-offset: 3px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 768px) {
+  .lfeed {
+    padding-top: 10px;
+  }
+
+  .lfeed-more-btn {
+    width: 100%;
+    max-width: 320px;
+  }
+}

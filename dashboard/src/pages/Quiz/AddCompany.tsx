@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { MdModeEdit, MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
+import { authHeaders } from "../../lib/authHeaders";
 
 type Company = {
   id: number | string;
@@ -101,6 +102,7 @@ const AddCompany: React.FC = () => {
         method: isEditing ? "PATCH" : "POST",
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders(),
         },
         body: JSON.stringify({ name: trimmed }),
       });
@@ -135,6 +137,7 @@ const AddCompany: React.FC = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders(),
         },
         body: JSON.stringify({ status: nextStatus }),
       });
@@ -189,6 +192,7 @@ const AddCompany: React.FC = () => {
       setRowActionLoadingId(company.id);
       const res = await fetch(API.DELETE_COMPANY(company.id), {
         method: "DELETE",
+        headers: authHeaders(),
       });
 
       if (!res.ok) {

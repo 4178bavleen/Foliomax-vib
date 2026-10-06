@@ -1,5 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
+const fs = require("fs");
+const path = require("path");
 const prisma = new PrismaClient();
+const learnFeedCache = require("../../../lib/learnFeedCache");
 
 /**
  * CREATE INSIGHT
@@ -70,6 +73,8 @@ exports.createInsight = async (req, res) => {
       },
     });
 
+    await learnFeedCache.invalidate();
+
     res.status(201).json({
       success: true,
       data: insight,
@@ -84,11 +89,21 @@ exports.createInsight = async (req, res) => {
 };
 
 /**
+ * Relation field on `insight` is `insightcategory`. Every public endpoint
+ * re-exposes it as `category` so the API contract stays stable.
+ */
+function withCategory(insight) {
+  if (!insight) return insight;
+  const { insightcategory, ...rest } = insight;
+  return { ...rest, category: insightcategory || null };
+}
+
+/**
  * LIST INSIGHTS
  */
 exports.getInsights = async (req, res) => {
   try {
-    const { category, type } = req.query;
+    const { category, type, limit } = req.query;
 
     const insights = await prisma.insight.findMany({
       where: {
@@ -99,14 +114,13 @@ exports.getInsights = async (req, res) => {
         }),
       },
       include: {
-        category: true,
+        insightcategory: true,
       },
-      orderBy: {
-        publishedAt: "desc",
-      },
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+      ...(Number(limit) > 0 ? { take: Math.min(Number(limit), 100) } : {}),
     });
 
-    res.json({ success: true, data: insights });
+    res.json({ success: true, data: insights.map(withCategory) });
   } catch (err) {
     console.error("GET INSIGHTS ERROR:", err);
     res.status(500).json({
@@ -125,7 +139,7 @@ exports.getInsightBySlug = async (req, res) => {
 
     const insight = await prisma.insight.findUnique({
       where: { slug },
-      include: { category: true },
+      include: { insightcategory: true },
     });
 
     if (!insight || !insight.isPublished) {
@@ -135,7 +149,7 @@ exports.getInsightBySlug = async (req, res) => {
       });
     }
 
-    res.json({ success: true, data: insight });
+    res.json({ success: true, data: withCategory(insight) });
   } catch (err) {
     console.error("GET INSIGHT ERROR:", err);
     res.status(500).json({
@@ -188,6 +202,8 @@ exports.deleteInsight = async (req, res) => {
     await prisma.insight.delete({
       where: { id: Number(id) },
     });
+
+    await learnFeedCache.invalidate();
 
     res.json({
       success: true,

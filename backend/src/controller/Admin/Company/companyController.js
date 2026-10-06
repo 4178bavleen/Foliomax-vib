@@ -1,6 +1,7 @@
 // src/controller/Admin/Company/companyController.js
 const { PrismaClient, Prisma } = require("@prisma/client");
 const prisma = new PrismaClient();
+const learnFeedCache = require("../../../lib/learnFeedCache");
 
 // GET /api/companies?status=ACTIVE|PENDING|INACTIVE
 exports.getCompanies = async (req, res) => {
@@ -127,6 +128,9 @@ exports.deleteCompany = async (req, res) => {
     await prisma.company.delete({
       where: { id: Number(id) },
     });
+
+    // Cascades to the company's quiz rows, which the learn feed groups by name.
+    await learnFeedCache.invalidate();
 
     return res.json({ message: "Company deleted successfully" });
   } catch (err) {

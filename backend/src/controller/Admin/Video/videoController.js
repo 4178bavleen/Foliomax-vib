@@ -9,6 +9,7 @@ const multer = require('multer');
 const crypto = require('crypto');
 
 const REDIS = require('../../../lib/redisClient'); // optional, ensure path valid
+const learnFeedCache = require('../../../lib/learnFeedCache');
 const VIDEO_MAX_SIZE_MB = Number(process.env.VIDEO_MAX_SIZE_MB || 500);
 const UPLOAD_DIR = process.env.VIDEO_UPLOAD_DIR || path.join(process.cwd(), 'public', 'uploads', 'videos');
 
@@ -134,6 +135,7 @@ exports.uploadVideo = async (req, res) => {
 
     // invalidate redis cache
     try { await REDIS.del('videos:list:cached'); } catch (e) { /* ignore */ }
+    await learnFeedCache.invalidate();
 
     // Format tag list for response
     const tagList = (created.videotag || []).map(t => t.tag?.name).filter(Boolean);
@@ -291,6 +293,7 @@ exports.deleteVideo = async (req, res) => {
     });
 
     try { await REDIS.del('videos:list:cached'); } catch (e) { /* ignore */ }
+    await learnFeedCache.invalidate();
 
     return res.json({ ok: true, data: { id: updated.id } });
   } catch (err) {
@@ -369,6 +372,7 @@ exports.overwriteVideo = async (req, res) => {
       });
 
       try { await REDIS.del('videos:list:cached'); } catch (e) { /* ignore */ }
+      await learnFeedCache.invalidate();
 
       return res.json({
         ok: true,
@@ -397,6 +401,7 @@ exports.overwriteVideo = async (req, res) => {
       });
 
       try { await REDIS.del('videos:list:cached'); } catch (e) { /* ignore */ }
+      await learnFeedCache.invalidate();
 
       return res.json({
         ok: true,
@@ -460,6 +465,9 @@ exports.publicListVideosByTag = async (req, res) => {
       mimeType: v.mimeType,
       sizeBytes: v.sizeBytes ? String(v.sizeBytes) : null,
       url: v.url || toPublicUrl(req, v.storagePath || ""),
+      // No thumbnail column exists on the video table yet. Declared explicitly
+      // so consumers stop rendering poster="" on a broken source.
+      thumbnail: null,
       uploadedAt: v.uploadedAt ? v.uploadedAt.toISOString() : null,
       tags: (v.videotag || []).map((tt) => tt.tag?.name).filter(Boolean),
     }));

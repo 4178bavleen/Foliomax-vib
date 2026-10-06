@@ -46,7 +46,7 @@ model blog {
   isPublished  Boolean      @default(true)
   uploadedAt   DateTime     @default(now())
   createdAt    DateTime     @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime     @updatedAt
   blogcategory blogcategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Blog_categoryId_fkey")
 
   @@index([categoryId], map: "Blog_categoryId_idx")
@@ -60,7 +60,7 @@ model blogcategory {
   slug      String   @unique(map: "BlogCategory_slug_key")
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   blog      blog[]
 
   @@index([isActive], map: "BlogCategory_isActive_idx")
@@ -70,7 +70,7 @@ model company {
   id        Int            @id @default(autoincrement())
   name      String         @unique(map: "Company_name_key")
   createdAt DateTime       @default(now())
-  updatedAt DateTime
+  updatedAt DateTime       @updatedAt
   status    company_status @default(ACTIVE)
   quiz      quiz[]
 }
@@ -91,7 +91,7 @@ model contactmessage {
   ipAddress   String?
   userAgent   String?
   createdAt   DateTime              @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime              @updatedAt
 
   @@index([createdAt], map: "ContactMessage_createdAt_idx")
   @@index([email], map: "ContactMessage_email_idx")
@@ -126,7 +126,7 @@ model excelfile {
   lastExportedAt       DateTime?
   lastExportDurationMs Int?
   createdAt            DateTime         @default(now())
-  updatedAt            DateTime
+  updatedAt            DateTime         @updatedAt
   pageName             String?          @db.VarChar(100)
   isPremium            Boolean          @default(false)
   driveUrl             String?          // Google Drive/Sheets shareable link
@@ -148,7 +148,7 @@ model excelsheet {
   name      String
   dataJson  Json
   createdAt DateTime  @default(now())
-  updatedAt DateTime
+  updatedAt DateTime  @updatedAt
   excelfile excelfile @relation(fields: [fileId], references: [id], onDelete: Cascade, map: "ExcelSheet_fileId_fkey")
 
   @@unique([fileId, idx], map: "ExcelSheet_fileId_idx_key")
@@ -171,7 +171,7 @@ model insight {
   isPublished      Boolean         @default(true)
   publishedAt      DateTime?
   createdAt        DateTime        @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime        @updatedAt
   insightcategory  insightcategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Insight_categoryId_fkey")
 
   @@index([categoryId], map: "Insight_categoryId_idx")
@@ -189,7 +189,7 @@ model insightcategory {
   order       Int                  @default(0)
   isActive    Boolean              @default(true)
   createdAt   DateTime             @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime             @updatedAt
   insight     insight[]
 
   @@index([isActive], map: "InsightCategory_isActive_idx")
@@ -211,7 +211,7 @@ model payment {
   contact           String?
   paidAt            DateTime?
   createdAt         DateTime           @default(now())
-  updatedAt         DateTime
+  updatedAt         DateTime           @updatedAt
   rawResponse       Json?
   pdf               pdf?               @relation(fields: [pdfId], references: [id], map: "Payment_pdfId_fkey")
   user              user               @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Payment_userId_fkey")
@@ -263,7 +263,7 @@ model quiz {
   id           Int      @id @default(autoincrement())
   companyId    Int
   createdAt    DateTime @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime @updatedAt
   correctIndex Int
   note         String?  @db.LongText
   options      Json
@@ -281,7 +281,7 @@ model sitecontent {
   pageName  String?  @db.VarChar(100)
   updatedBy Int?
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   user      user?    @relation(fields: [updatedBy], references: [id], map: "SiteContent_updatedBy_fkey")
 
   @@index([pageName], map: "SiteContent_pageName_idx")
@@ -295,7 +295,7 @@ model subscriptionplan {
   price            Int
   isActive         Boolean            @default(true)
   createdAt        DateTime           @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime           @updatedAt
   usersubscription usersubscription[]
 }
 
@@ -321,7 +321,7 @@ model user {
   passwordResetToken             String?
   passwordResetExpiry            DateTime?
   createdAt                      DateTime           @default(now())
-  updatedAt                      DateTime
+  updatedAt                      DateTime           @updatedAt
   profileImage                   String?
   otp                            String?
   otpAttempts                    Int                @default(0)
@@ -368,7 +368,7 @@ model video {
   deletedAt                     DateTime?
   deletedById                   Int?
   createdAt                     DateTime   @default(now())
-  updatedAt                     DateTime
+  updatedAt                     DateTime   @updatedAt
   user_video_deletedByIdTouser  user?      @relation("video_deletedByIdTouser", fields: [deletedById], references: [id], map: "Video_deletedById_fkey")
   user_video_uploadedByIdTouser user?      @relation("video_uploadedByIdTouser", fields: [uploadedById], references: [id], map: "Video_uploadedById_fkey")
   videotag                      videotag[]
@@ -404,7 +404,7 @@ model wordfile {
   pageName         String?  @db.VarChar(100)
   version          String?
   createdAt        DateTime @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime @updatedAt
 
   @@index([isActive, isDeleted], map: "WordFile_isActive_isDeleted_idx")
   @@index([name], map: "WordFile_name_idx")

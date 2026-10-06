@@ -1,6 +1,7 @@
 // src/pages/AddBlog.tsx
 import React, { useEffect, useState, useCallback } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import { authHeaders } from "../../lib/authHeaders";
 
 type BlogCategory = {
   id: number | string;
@@ -86,6 +87,7 @@ const AddBlog: React.FC = () => {
 
       const res = await fetch(API.ADD_BLOG, {
         method: "POST",
+        headers: authHeaders(),
         body: formData,
       });
 

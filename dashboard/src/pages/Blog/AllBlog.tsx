@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { MdModeEdit, MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 import EditModal from "./EditModal";
+import { authHeaders } from "../../lib/authHeaders";
 
 type BlogCategory = {
   id: number | string;
@@ -89,6 +90,7 @@ const AllBlog: React.FC = () => {
     try {
       const res = await fetch(API.DELETE_BLOG(blog.id), {
         method: "DELETE",
+        headers: authHeaders(),
       });
 
       if (!res.ok) throw new Error("Delete failed");

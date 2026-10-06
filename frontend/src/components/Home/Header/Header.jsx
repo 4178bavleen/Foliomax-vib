@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { title: "About Us", href: "/about-us" },
 
   {
-    title: "Folio Edge",
+    title: "Learn and Explore",
     href: "/",
     children: [
       { title: "Calculate Your Investment", href: "/calculators" },

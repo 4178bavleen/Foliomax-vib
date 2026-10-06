@@ -8,18 +8,27 @@ const {
   deleteBlog,
   updateBlog,
 } = require("../../../controller/Admin/Blog/blogController");
+const { authMiddleware, adminOnly } = require("../../../middlewares/authMiddleware");
 
 // CREATE BLOG
-router.post("/create", upload.single("image"), createBlog);
+router.post(
+  "/create",
+  authMiddleware,
+  adminOnly,
+  upload.single("image"),
+  createBlog
+);
 
-// GET BLOGS
+// GET BLOGS (public - consumed by /blogs and the learn feed)
 router.get("/get", getBlogs);
 
 // DELETE BLOG
-router.delete("/delete/:id", deleteBlog);
+router.delete("/delete/:id", authMiddleware, adminOnly, deleteBlog);
 
 router.put(
   "/update/:id",
+  authMiddleware,
+  adminOnly,
   upload.single("image"),
   updateBlog
 );

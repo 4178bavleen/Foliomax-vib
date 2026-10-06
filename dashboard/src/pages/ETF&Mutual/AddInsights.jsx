@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import { authHeaders } from "../../lib/authHeaders";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "";
 
@@ -101,6 +102,7 @@ const AddInsight = () => {
 
       const res = await fetch(API.ADD_INSIGHT, {
         method: "POST",
+        headers: authHeaders(),
         body: formData,
       });
 

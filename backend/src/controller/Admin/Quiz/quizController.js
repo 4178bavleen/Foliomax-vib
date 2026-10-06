@@ -1,6 +1,7 @@
 // src/controller/Admin/Quiz/quizController.js
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const learnFeedCache = require("../../../lib/learnFeedCache");
 
 function shuffleArray(arr) {
   const copy = [...arr];
@@ -179,6 +180,8 @@ exports.createQuiz = async (req, res) => {
       },
     });
 
+    await learnFeedCache.invalidate();
+
     return res.status(201).json(quiz);
   } catch (err) {
     console.error("POST /quizzes/add error:", err);
@@ -254,6 +257,8 @@ exports.updateQuiz = async (req, res) => {
       data,
     });
 
+    await learnFeedCache.invalidate();
+
     return res.json(updated);
   } catch (err) {
     console.error("PATCH /quizzes/update/:id error:", err);
@@ -272,6 +277,8 @@ exports.deleteQuiz = async (req, res) => {
     await prisma.quiz.delete({
       where: { id: Number(id) },
     });
+
+    await learnFeedCache.invalidate();
 
     return res.json({ message: "Quiz deleted successfully" });
   } catch (err) {

@@ -10,18 +10,23 @@ const {
 
 // import insight-specific multer
 const insightUpload = require("../../../config/insightMulter");
+const { authMiddleware, adminOnly } = require("../../../middlewares/authMiddleware");
+
+// LIST INSIGHTS (public - consumed by /etf-mutual-insights and the learn feed)
+router.get("/", getInsights);
+
+// GET SINGLE INSIGHT (public)
+router.get("/:slug", getInsightBySlug);
 
 // CREATE INSIGHT (with image upload)
 router.post(
   "/",
-  insightUpload.single("coverImage"), 
+  authMiddleware,
+  adminOnly,
+  insightUpload.single("coverImage"),
   createInsight
 );
 
-// LIST INSIGHTS
-router.get("/", getInsights);
+router.delete("/:id", authMiddleware, adminOnly, deleteInsight);
 
-// GET SINGLE INSIGHT
-router.get("/:slug", getInsightBySlug);
-router.delete("/:id", deleteInsight);
 module.exports = router;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { authHeaders } from "../../lib/authHeaders";
 
 type BlogCategory = {
   id: number | string;
@@ -95,6 +96,7 @@ const EditModal: React.FC<Props> = ({
 
       const res = await fetch(UPDATE_BLOG(form.id), {
         method: "PUT",
+        headers: authHeaders(),
         body: fd,
       });
 

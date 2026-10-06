@@ -10,7 +10,7 @@ function PageTitle() {
         <div className="lwu-header">
           <h1>Learn <span className="lwu-gradient-text">With Us</span></h1>
           <p className="lwu-subtitle">
-            Explore, learn, and improve your financial knowledge with interactive content, quizzes, and insights.
+            Explore, learn, and improve your financial knowledge .
           </p>
           <ul className="lwu-breadcrumb">
             <li><a href="/">Home</a></li>

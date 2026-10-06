@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const learnFeedCache = require("../../../lib/learnFeedCache");
 
 /**
  * CREATE BLOG
@@ -42,6 +43,8 @@ exports.createBlog = async (req, res) => {
       },
     });
 
+    await learnFeedCache.invalidate();
+
     res.status(201).json({ success: true, data: blog });
   } catch (err) {
     console.error(err);
@@ -60,12 +63,20 @@ exports.getBlogs = async (req, res) => {
   try {
     const blogs = await prisma.blog.findMany({
       where: { isPublished: true },
-      include: { category: true },
+      // Relation field is `blogcategory`; re-exposed as `category` so the API
+      // contract stays stable for the frontend.
+      include: { blogcategory: true },
       orderBy: { uploadedAt: "desc" },
     });
 
-    res.json({ success: true, data: blogs });
+    const data = blogs.map(({ blogcategory, ...blog }) => ({
+      ...blog,
+      category: blogcategory || null,
+    }));
+
+    res.json({ success: true, data });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ success: false, message: "Failed to fetch blogs" });
   }
 };
@@ -116,6 +127,8 @@ exports.deleteBlog = async (req, res) => {
     await prisma.blog.delete({
       where: { id: Number(id) },
     });
+
+    await learnFeedCache.invalidate();
 
     res.json({
       success: true,
@@ -209,6 +222,8 @@ exports.updateBlog = async (req, res) => {
         image: imagePath,
       },
     });
+
+    await learnFeedCache.invalidate();
 
     res.json({
       success: true,

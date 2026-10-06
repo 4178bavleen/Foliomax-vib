@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { MdModeEdit, MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
+import { authHeaders } from "../../lib/authHeaders";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "";
 
@@ -85,6 +86,7 @@ const AllInsights = () => {
     try {
       await fetch(API.DELETE_INSIGHT(insight.id), {
         method: "DELETE",
+        headers: authHeaders(),
       });
       fetchInsights();
     } catch (err) {

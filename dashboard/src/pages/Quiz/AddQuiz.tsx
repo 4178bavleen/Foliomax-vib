@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
+import { authHeaders } from "../../lib/authHeaders";
 type Company = {
   id: number | string;
   name: string;
@@ -130,6 +131,7 @@ const AddQuiz: React.FC = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...authHeaders(),
       },
       body: JSON.stringify(payload),
     });
