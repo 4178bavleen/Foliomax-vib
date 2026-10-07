@@ -4,459 +4,750 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+
+  url = env("DATABASE_URL")
 }
 
 model FaqCategory {
-  id        Int      @id @default(autoincrement())
-  name      String
-  code      String   @unique
-  isActive  Boolean  @default(true)
+  id Int @id @default(autoincrement())
+
+  name String
+
+  code String @unique
+
+  isActive Boolean @default(true)
+
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
-  faqs      Faq[]
+
+  faqs Faq[]
 
   @@map("faq_categories")
 }
 
 model Faq {
-  id          Int         @id @default(autoincrement())
-  question    String
-  answer      String?
-  isPublished Boolean     @default(true)
-  order       Int?
-  metadata    Json?
-  categoryId  Int
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  category    FaqCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id Int @id @default(autoincrement())
+
+  question String
+
+  answer String?
+
+  isPublished Boolean @default(true)
+
+  order Int?
+
+  metadata Json?
+
+  categoryId Int
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  category FaqCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@index([categoryId])
   @@map("faqs")
 }
 
 model blog {
-  id           Int          @id @default(autoincrement())
-  categoryId   Int
-  title        String
-  subtitle     String?
-  image        String?
-  content      String       @db.LongText
-  authorName   String
-  isPublished  Boolean      @default(true)
-  uploadedAt   DateTime     @default(now())
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id Int @id @default(autoincrement())
+
+  categoryId Int
+
+  title String
+
+  subtitle String?
+
+  image String?
+
+  content String @db.LongText
+
+  authorName String
+
+  isPublished Boolean @default(true)
+
+  uploadedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
   blogcategory blogcategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Blog_categoryId_fkey")
 
   @@index([categoryId], map: "Blog_categoryId_idx")
   @@index([isPublished], map: "Blog_isPublished_idx")
   @@index([uploadedAt], map: "Blog_uploadedAt_idx")
+  @@map("Blog")
 }
 
 model blogcategory {
-  id        Int      @id @default(autoincrement())
-  name      String
-  slug      String   @unique(map: "BlogCategory_slug_key")
-  isActive  Boolean  @default(true)
+  id Int @id @default(autoincrement())
+
+  name String
+
+  slug String @unique(map: "BlogCategory_slug_key")
+
+  isActive Boolean @default(true)
+
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
-  blog      blog[]
+
+  blog blog[]
 
   @@index([isActive], map: "BlogCategory_isActive_idx")
+  @@map("BlogCategory")
 }
 
 model company {
-  id        Int            @id @default(autoincrement())
-  name      String         @unique(map: "Company_name_key")
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  status    company_status @default(ACTIVE)
-  quiz      quiz[]
+  id Int @id @default(autoincrement())
+
+  name String @unique(map: "Company_name_key")
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  status company_status @default(ACTIVE)
+
+  quiz quiz[]
+
+  @@map("Company")
 }
 
 model contactmessage {
-  id          BigInt                @id @default(autoincrement())
-  name        String
-  email       String
-  phone       String?
-  city        String?
-  topic       String
-  message     String                @db.Text
-  status      contactmessage_status @default(OPEN)
-  isRead      Boolean               @default(false)
+  id BigInt @id @default(autoincrement())
+
+  name String
+
+  email String
+
+  phone String?
+
+  city String?
+
+  topic String
+
+  message String @db.Text
+
+  status contactmessage_status @default(OPEN)
+
+  isRead Boolean @default(false)
+
   respondedBy String?
-  response    String?               @db.Text
+
+  response String? @db.Text
+
   respondedAt DateTime?
-  ipAddress   String?
-  userAgent   String?
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
+
+  ipAddress String?
+
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
 
   @@index([createdAt], map: "ContactMessage_createdAt_idx")
   @@index([email], map: "ContactMessage_email_idx")
   @@index([status], map: "ContactMessage_status_idx")
+  @@map("ContactMessage")
 }
 
 model excelexportlog {
-  id         Int                   @id @default(autoincrement())
-  fileId     Int
-  startedAt  DateTime              @default(now())
+  id Int @id @default(autoincrement())
+
+  fileId Int
+
+  startedAt DateTime @default(now())
+
   durationMs Int
-  status     excelexportlog_status @default(SUCCESS)
-  meta       Json?
-  createdAt  DateTime              @default(now())
-  excelfile  excelfile             @relation(fields: [fileId], references: [id], onDelete: Cascade, map: "ExcelExportLog_fileId_fkey")
+
+  status excelexportlog_status @default(SUCCESS)
+
+  meta Json?
+
+  createdAt DateTime @default(now())
+
+  excelfile excelfile @relation(fields: [fileId], references: [id], onDelete: Cascade, map: "ExcelExportLog_fileId_fkey")
 
   @@index([fileId, createdAt], map: "ExcelExportLog_fileId_createdAt_idx")
+  @@map("ExcelExportLog")
 }
 
 model excelfile {
-  id                   Int              @id @default(autoincrement())
-  name                 String
-  originalFilename     String?
-  mimeType             String?
-  sizeBytes            Int?
-  storagePath          String?
-  checksum             String?          @unique(map: "ExcelFile_checksum_key")
-  isActive             Boolean          @default(true)
-  isDeleted            Boolean          @default(false)
-  exportCount          Int              @default(0)
-  totalExportMs        BigInt           @default(0)
-  lastExportedAt       DateTime?
+  id Int @id @default(autoincrement())
+
+  name String
+
+  originalFilename String?
+
+  mimeType String?
+
+  sizeBytes Int?
+
+  storagePath String?
+
+  checksum String? @unique(map: "ExcelFile_checksum_key")
+
+  isActive Boolean @default(true)
+
+  isDeleted Boolean @default(false)
+
+  exportCount Int @default(0)
+
+  totalExportMs BigInt @default(0)
+
+  lastExportedAt DateTime?
+
   lastExportDurationMs Int?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  pageName             String?          @db.VarChar(100)
-  isPremium            Boolean          @default(false)
-  driveUrl             String?          // Google Drive/Sheets shareable link
-  driveFileId          String?          // Extracted file ID from Drive URL
-  driveMimeType        String?          // e.g., "application/vnd.google-apps.spreadsheet"
-  excelexportlog       excelexportlog[]
-  excelsheet           excelsheet[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  pageName String? @db.VarChar(100)
+
+  isPremium Boolean @default(false)
+
+  driveUrl String? // Google Drive/Sheets shareable link
+
+  driveFileId String? // Extracted file ID from Drive URL
+
+  driveMimeType String? // e.g., "application/vnd.google-apps.spreadsheet"
+
+  excelexportlog excelexportlog[]
+
+  excelsheet excelsheet[]
 
   @@index([isActive, isDeleted], map: "ExcelFile_isActive_isDeleted_idx")
   @@index([name], map: "ExcelFile_name_idx")
   @@index([pageName], map: "ExcelFile_pageName_idx")
   @@index([driveFileId], map: "ExcelFile_driveFileId_idx")
+  @@map("ExcelFile")
 }
 
 model excelsheet {
-  id        Int       @id @default(autoincrement())
-  fileId    Int
-  idx       Int
-  name      String
-  dataJson  Json
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id Int @id @default(autoincrement())
+
+  fileId Int
+
+  idx Int
+
+  name String
+
+  dataJson Json
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
   excelfile excelfile @relation(fields: [fileId], references: [id], onDelete: Cascade, map: "ExcelSheet_fileId_fkey")
 
   @@unique([fileId, idx], map: "ExcelSheet_fileId_idx_key")
   @@index([fileId], map: "ExcelSheet_fileId_idx")
+  @@map("ExcelSheet")
 }
 
 model insight {
-  id               Int             @id @default(autoincrement())
-  categoryId       Int
-  title            String
-  slug             String          @unique(map: "Insight_slug_key")
+  id Int @id @default(autoincrement())
+
+  categoryId Int
+
+  title String
+
+  slug String @unique(map: "Insight_slug_key")
+
   shortDescription String
-  content          String          @db.LongText
-  coverImage       String?
-  authorName       String
-  readingTime      String?
-  type             insight_type
-  tags             Json?
-  isFeatured       Boolean         @default(false)
-  isPublished      Boolean         @default(true)
-  publishedAt      DateTime?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  insightcategory  insightcategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Insight_categoryId_fkey")
+
+  content String @db.LongText
+
+  coverImage String?
+
+  authorName String
+
+  readingTime String?
+
+  type insight_type
+
+  tags Json?
+
+  isFeatured Boolean @default(false)
+
+  isPublished Boolean @default(true)
+
+  publishedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  insightcategory insightcategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Insight_categoryId_fkey")
 
   @@index([categoryId], map: "Insight_categoryId_idx")
   @@index([isPublished], map: "Insight_isPublished_idx")
   @@index([publishedAt], map: "Insight_publishedAt_idx")
   @@index([type], map: "Insight_type_idx")
+  @@map("Insight")
 }
 
 model insightcategory {
-  id          Int                  @id @default(autoincrement())
-  name        String
-  slug        String               @unique(map: "InsightCategory_slug_key")
+  id Int @id @default(autoincrement())
+
+  name String
+
+  slug String @unique(map: "InsightCategory_slug_key")
+
   description String?
-  type        insightcategory_type
-  order       Int                  @default(0)
-  isActive    Boolean              @default(true)
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  insight     insight[]
+
+  type insightcategory_type
+
+  order Int @default(0)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  insight insight[]
 
   @@index([isActive], map: "InsightCategory_isActive_idx")
   @@index([type], map: "InsightCategory_type_idx")
+  @@map("InsightCategory")
 }
 
 model payment {
-  id                Int                @id @default(autoincrement())
-  userId            Int
-  pdfId             Int?
-  razorpayOrderId   String             @unique(map: "Payment_razorpayOrderId_key")
-  razorpayPaymentId String?            @unique(map: "Payment_razorpayPaymentId_key")
+  id Int @id @default(autoincrement())
+
+  userId Int
+
+  pdfId Int?
+
+  razorpayOrderId String @unique(map: "Payment_razorpayOrderId_key")
+
+  razorpayPaymentId String? @unique(map: "Payment_razorpayPaymentId_key")
+
   razorpaySignature String?
-  amount            Int
-  currency          String             @default("INR")
-  status            payment_status     @default(CREATED)
-  method            payment_method     @default(UNKNOWN)
-  email             String?
-  contact           String?
-  paidAt            DateTime?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  rawResponse       Json?
-  pdf               pdf?               @relation(fields: [pdfId], references: [id], map: "Payment_pdfId_fkey")
-  user              user               @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Payment_userId_fkey")
-  usersubscription  usersubscription[]
+
+  amount Int
+
+  currency String @default("INR")
+
+  status payment_status @default(CREATED)
+
+  method payment_method @default(UNKNOWN)
+
+  email String?
+
+  contact String?
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  rawResponse Json?
+
+  pdf pdf? @relation(fields: [pdfId], references: [id], map: "Payment_pdfId_fkey")
+
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Payment_userId_fkey")
+
+  usersubscription usersubscription[]
 
   @@index([pdfId], map: "Payment_pdfId_idx")
   @@index([status], map: "Payment_status_idx")
   @@index([userId], map: "Payment_userId_idx")
+  @@map("Payment")
 }
 
 model pdf {
-  id           Int       @id @default(autoincrement())
-  title        String?
-  description  String?
-  price        Float?
+  id Int @id @default(autoincrement())
+
+  title String?
+
+  description String?
+
+  price Float?
+
   originalName String
-  mimeType     String
-  sizeBytes    BigInt
-  storagePath  String
-  url          String?
-  isPublic     Boolean   @default(true)
-  uploadedAt   DateTime  @default(now())
-  updatedAt    DateTime?
-  isDeleted    Boolean   @default(false)
-  deletedAt    DateTime?
-  deletedById  Int?
+
+  mimeType String
+
+  sizeBytes BigInt
+
+  storagePath String
+
+  url String?
+
+  isPublic Boolean @default(true)
+
+  uploadedAt DateTime @default(now())
+
+  updatedAt DateTime?
+
+  isDeleted Boolean @default(false)
+
+  deletedAt DateTime?
+
+  deletedById Int?
+
   uploadedById Int?
-  payment      payment[]
-  user         user?     @relation(fields: [uploadedById], references: [id], map: "Pdf_uploadedById_fkey")
-  pdftag       pdftag[]
+
+  payment payment[]
+
+  user user? @relation(fields: [uploadedById], references: [id], map: "Pdf_uploadedById_fkey")
+
+  pdftag pdftag[]
 
   @@index([isDeleted], map: "Pdf_isDeleted_idx")
   @@index([uploadedAt], map: "Pdf_uploadedAt_idx")
   @@index([uploadedById], map: "Pdf_uploadedById_fkey")
+  @@map("Pdf")
 }
 
 model pdftag {
-  id    Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
   pdfId Int
+
   tagId Int
-  pdf   pdf @relation(fields: [pdfId], references: [id], onDelete: Cascade, map: "PdfTag_pdfId_fkey")
-  tag   tag @relation(fields: [tagId], references: [id], onDelete: Cascade, map: "PdfTag_tagId_fkey")
+
+  pdf pdf @relation(fields: [pdfId], references: [id], onDelete: Cascade, map: "PdfTag_pdfId_fkey")
+
+  tag tag @relation(fields: [tagId], references: [id], onDelete: Cascade, map: "PdfTag_tagId_fkey")
 
   @@unique([pdfId, tagId], map: "PdfTag_pdfId_tagId_key")
   @@index([tagId], map: "PdfTag_tagId_fkey")
+  @@map("PdfTag")
 }
 
 model quiz {
-  id           Int      @id @default(autoincrement())
-  companyId    Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id Int @id @default(autoincrement())
+
+  companyId Int
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
   correctIndex Int
-  note         String?  @db.LongText
-  options      Json
-  question     String
-  pageName     String?  @db.VarChar(100)
-  company      company  @relation(fields: [companyId], references: [id], onDelete: Cascade, map: "Quiz_companyId_fkey")
+
+  note String? @db.LongText
+
+  options Json
+
+  question String
+
+  pageName String? @db.VarChar(100)
+
+  company company @relation(fields: [companyId], references: [id], onDelete: Cascade, map: "Quiz_companyId_fkey")
 
   @@index([companyId], map: "Quiz_companyId_idx")
+  @@map("Quiz")
 }
 
 model sitecontent {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique(map: "SiteContent_key_key") @db.VarChar(150)
-  value     String   @db.LongText
-  pageName  String?  @db.VarChar(100)
+  id Int @id @default(autoincrement())
+
+  key String @unique(map: "SiteContent_key_key") @db.VarChar(150)
+
+  value String @db.LongText
+
+  pageName String? @db.VarChar(100)
+
   updatedBy Int?
+
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
-  user      user?    @relation(fields: [updatedBy], references: [id], map: "SiteContent_updatedBy_fkey")
+
+  user user? @relation(fields: [updatedBy], references: [id], map: "SiteContent_updatedBy_fkey")
 
   @@index([pageName], map: "SiteContent_pageName_idx")
   @@index([updatedBy], map: "SiteContent_updatedBy_fkey")
+  @@map("SiteContent")
 }
 
 model subscriptionplan {
-  id               Int                @id @default(autoincrement())
-  name             String
-  duration         Int
-  price            Int
-  isActive         Boolean            @default(true)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id Int @id @default(autoincrement())
+
+  name String
+
+  duration Int
+
+  price Int
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
   usersubscription usersubscription[]
+
+  @@map("SubscriptionPlan")
 }
 
 model tag {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique(map: "Tag_name_key")
-  createdAt DateTime   @default(now())
-  pdftag    pdftag[]
-  videotag  videotag[]
+  id Int @id @default(autoincrement())
+
+  name String @unique(map: "Tag_name_key")
+
+  createdAt DateTime @default(now())
+
+  pdftag pdftag[]
+
+  videotag videotag[]
+
+  @@map("Tag")
 }
 
 model user {
-  id                             Int                @id @default(autoincrement())
-  name                           String?
-  email                          String             @unique(map: "User_email_key")
-  passwordHash                   String
-  phone                          String?
-  role                           user_role          @default(USER)
-  emailVerified                  Boolean            @default(false)
-  verificationToken              String?
-  verificationExpiry             DateTime?
-  refreshToken                   String?
-  passwordResetToken             String?
-  passwordResetExpiry            DateTime?
-  createdAt                      DateTime           @default(now())
-  updatedAt                      DateTime           @updatedAt
-  profileImage                   String?
-  otp                            String?
-  otpAttempts                    Int                @default(0)
-  otpExpiry                      DateTime?
-  payment                        payment[]
-  pdf                            pdf[]
-  sitecontent                    sitecontent[]
-  usersubscription               usersubscription[]
-  video_video_deletedByIdTouser  video[]            @relation("video_deletedByIdTouser")
-  video_video_uploadedByIdTouser video[]            @relation("video_uploadedByIdTouser")
+  id Int @id @default(autoincrement())
+
+  name String?
+
+  email String @unique(map: "User_email_key")
+
+  passwordHash String
+
+  phone String?
+
+  role user_role @default(USER)
+
+  emailVerified Boolean @default(false)
+
+  verificationToken String?
+
+  verificationExpiry DateTime?
+
+  refreshToken String?
+
+  passwordResetToken String?
+
+  passwordResetExpiry DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  profileImage String?
+
+  otp String?
+
+  otpAttempts Int @default(0)
+
+  otpExpiry DateTime?
+
+  payment payment[]
+
+  pdf pdf[]
+
+  sitecontent sitecontent[]
+
+  usersubscription usersubscription[]
+
+  video_video_deletedByIdTouser video[] @relation("video_deletedByIdTouser")
+
+  video_video_uploadedByIdTouser video[] @relation("video_uploadedByIdTouser")
+
+  @@map("User")
 }
 
 model usersubscription {
-  id               Int              @id @default(autoincrement())
-  userId           Int
-  planId           Int
-  startDate        DateTime
-  endDate          DateTime
-  status           String
-  paymentId        Int?
-  createdAt        DateTime         @default(now())
-  payment          payment?         @relation(fields: [paymentId], references: [id], map: "UserSubscription_paymentId_fkey")
+  id Int @id @default(autoincrement())
+
+  userId Int
+
+  planId Int
+
+  startDate DateTime
+
+  endDate DateTime
+
+  status String
+
+  paymentId Int?
+
+  createdAt DateTime @default(now())
+
+  payment payment? @relation(fields: [paymentId], references: [id], map: "UserSubscription_paymentId_fkey")
+
   subscriptionplan subscriptionplan @relation(fields: [planId], references: [id], map: "UserSubscription_planId_fkey")
-  user             user             @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserSubscription_userId_fkey")
+
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserSubscription_userId_fkey")
 
   @@index([paymentId], map: "UserSubscription_paymentId_fkey")
   @@index([planId], map: "UserSubscription_planId_fkey")
   @@index([userId], map: "UserSubscription_userId_idx")
+  @@map("UserSubscription")
 }
 
 model video {
-  id                            Int        @id @default(autoincrement())
-  title                         String?
-  description                   String?    @db.LongText
-  originalName                  String
-  mimeType                      String?
-  sizeBytes                     BigInt?
-  storagePath                   String?
-  url                           String?
-  isPublic                      Boolean    @default(true)
-  uploadedById                  Int?
-  uploadedAt                    DateTime   @default(now())
-  isDeleted                     Boolean    @default(false)
-  deletedAt                     DateTime?
-  deletedById                   Int?
-  createdAt                     DateTime   @default(now())
-  updatedAt                     DateTime   @updatedAt
-  user_video_deletedByIdTouser  user?      @relation("video_deletedByIdTouser", fields: [deletedById], references: [id], map: "Video_deletedById_fkey")
-  user_video_uploadedByIdTouser user?      @relation("video_uploadedByIdTouser", fields: [uploadedById], references: [id], map: "Video_uploadedById_fkey")
-  videotag                      videotag[]
+  id Int @id @default(autoincrement())
+
+  title String?
+
+  description String? @db.LongText
+
+  originalName String
+
+  mimeType String?
+
+  sizeBytes BigInt?
+
+  storagePath String?
+
+  url String?
+
+  isPublic Boolean @default(true)
+
+  uploadedById Int?
+
+  uploadedAt DateTime @default(now())
+
+  isDeleted Boolean @default(false)
+
+  deletedAt DateTime?
+
+  deletedById Int?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  user_video_deletedByIdTouser user? @relation("video_deletedByIdTouser", fields: [deletedById], references: [id], map: "Video_deletedById_fkey")
+
+  user_video_uploadedByIdTouser user? @relation("video_uploadedByIdTouser", fields: [uploadedById], references: [id], map: "Video_uploadedById_fkey")
+
+  videotag videotag[]
 
   @@index([deletedById], map: "Video_deletedById_fkey")
   @@index([isDeleted], map: "Video_isDeleted_idx")
   @@index([uploadedAt], map: "Video_uploadedAt_idx")
   @@index([uploadedById], map: "Video_uploadedById_fkey")
+  @@map("Video")
 }
 
 model videotag {
-  id      Int   @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
   videoId Int
-  tagId   Int
-  tag     tag   @relation(fields: [tagId], references: [id], onDelete: Cascade, map: "VideoTag_tagId_fkey")
-  video   video @relation(fields: [videoId], references: [id], onDelete: Cascade, map: "VideoTag_videoId_fkey")
+
+  tagId Int
+
+  tag tag @relation(fields: [tagId], references: [id], onDelete: Cascade, map: "VideoTag_tagId_fkey")
+
+  video video @relation(fields: [videoId], references: [id], onDelete: Cascade, map: "VideoTag_videoId_fkey")
 
   @@unique([videoId, tagId], map: "VideoTag_videoId_tagId_key")
   @@index([tagId], map: "VideoTag_tagId_idx")
   @@index([videoId], map: "VideoTag_videoId_idx")
+  @@map("VideoTag")
 }
 
 model wordfile {
-  id               Int      @id @default(autoincrement())
-  name             String
+  id Int @id @default(autoincrement())
+
+  name String
+
   originalFilename String?
-  mimeType         String?
-  sizeBytes        Int?
-  storagePath      String?
-  checksum         String?  @unique(map: "WordFile_checksum_key")
-  isActive         Boolean  @default(true)
-  isDeleted        Boolean  @default(false)
-  pageName         String?  @db.VarChar(100)
-  version          String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+
+  mimeType String?
+
+  sizeBytes Int?
+
+  storagePath String?
+
+  checksum String? @unique(map: "WordFile_checksum_key")
+
+  isActive Boolean @default(true)
+
+  isDeleted Boolean @default(false)
+
+  pageName String? @db.VarChar(100)
+
+  version String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
 
   @@index([isActive, isDeleted], map: "WordFile_isActive_isDeleted_idx")
   @@index([name], map: "WordFile_name_idx")
+  @@map("WordFile")
 }
 
 enum company_status {
   ACTIVE
+
   PENDING
+
   INACTIVE
 }
 
 enum excelexportlog_status {
   SUCCESS
+
   FAILED
 }
 
 enum insightcategory_type {
   ETF
+
   MF
+
   BOTH
 }
 
 enum user_role {
   ADMIN
+
   USER
 }
 
 enum contactmessage_status {
   OPEN
+
   IN_PROGRESS
+
   RESOLVED
+
   CLOSED
 }
 
 enum payment_status {
   CREATED
+
   SUCCESS
+
   FAILED
+
   REFUNDED
 }
 
 enum insight_type {
   ETF
+
   MF
+
   BOTH
 }
 
 enum payment_method {
   CARD
+
   UPI
+
   NETBANKING
+
   WALLET
+
   EMI
+
   UNKNOWN
 }
