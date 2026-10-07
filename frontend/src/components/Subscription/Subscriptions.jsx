@@ -99,7 +99,7 @@ function Subscriptions() {
   const fetchExcels = async () => {
   try {
     const res = await fetch(
-      `${API_BASE}/foliomax/api/files?type=excel`
+      `${API_BASE}/foliomax/api/files`
     );
 
     const data = await res.json();

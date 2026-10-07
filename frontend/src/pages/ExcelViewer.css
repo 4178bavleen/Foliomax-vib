@@ -1,0 +1,345 @@
+/* frontend/src/pages/ExcelViewer.css */
+
+.excel-page-container {
+  width: 100%;
+  min-height: calc(100vh - 420px);
+  padding: 30px 24px 60px 24px;
+  background-color: #f8fafc;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Top navigation bar / actions */
+.excel-nav-bar {
+  max-width: 1380px;
+  margin: 0 auto 16px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.excel-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.excel-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.excel-back-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.excel-file-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  background: #edf2f7;
+  padding: 5px 12px;
+  border-radius: 6px;
+}
+
+/* Main Spreadsheet Card */
+.excel-sheet-card {
+  max-width: 1380px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  overflow: hidden;
+}
+
+/* Table scroll area */
+.excel-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 75vh;
+  -webkit-overflow-scrolling: touch;
+}
+
+.excel-table-scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.excel-table-scroll::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.excel-table-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.excel-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Table Styles */
+.excel-table {
+  width: 100%;
+  min-width: 1300px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  line-height: 1.4;
+  background: #ffffff;
+}
+
+/* Header Row (# and A through Z) */
+.excel-table thead tr {
+  background: #f0f4f9;
+}
+
+.excel-header-hash {
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  padding: 9px 6px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #334155;
+  background: #f0f4f9;
+  border: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  user-select: none;
+}
+
+.excel-header-col {
+  min-width: 46px;
+  padding: 9px 6px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #334155;
+  background: #f0f4f9;
+  border: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  user-select: none;
+}
+
+.excel-header-col.col-wide-A {
+  min-width: 110px;
+}
+
+.excel-header-col.col-wide-B {
+  min-width: 90px;
+}
+
+/* Row Numbers Column (#) */
+.excel-row-num {
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  padding: 9px 6px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  color: #475569;
+  background: #f0f4f9;
+  border: 1px solid #e2e8f0;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  user-select: none;
+}
+
+/* Body Data Cells */
+.excel-cell {
+  padding: 9px 12px;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  background: #ffffff;
+  white-space: nowrap;
+  font-size: 13.5px;
+  transition: background-color 0.1s ease;
+}
+
+.excel-cell.col-text {
+  text-align: left;
+  font-weight: 500;
+  padding-left: 14px;
+}
+
+.excel-cell.col-num {
+  text-align: left;
+  font-weight: 500;
+  padding-left: 14px;
+}
+
+.excel-cell.cell-dash {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* Hover effects */
+.excel-table tbody tr:hover td.excel-cell {
+  background-color: #f8fafc;
+}
+
+.excel-table tbody tr:hover .excel-row-num {
+  background-color: #e2e8f0;
+}
+
+/* Sheet Tabs (Bottom) */
+.excel-sheet-tabs-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 6px 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.excel-sheet-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.excel-sheet-tab {
+  padding: 6px 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.excel-sheet-tab:hover {
+  background: #edf2f7;
+  color: #1e293b;
+}
+
+.excel-sheet-tab.active {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.excel-row-limit-info {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Loading & Error States */
+.excel-viewer-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+  padding: 40px 20px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  max-width: 800px;
+  margin: 40px auto;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+}
+
+.excel-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2e7d32;
+  border-radius: 50%;
+  animation: excel-spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes excel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.excel-state-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.excel-state-desc {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 20px 0;
+  max-width: 460px;
+}
+
+.excel-state-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.excel-btn-primary {
+  padding: 9px 18px;
+  background: #2e7d32;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.excel-btn-primary:hover {
+  background: #256629;
+}
+
+.excel-btn-secondary {
+  padding: 9px 18px;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.excel-btn-secondary:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}

@@ -1,7 +1,7 @@
 node_modules
 
 .env
-backend/public/uploads/
+public/uploads/
 
 /src/generated/prisma
 prisma/migrations

@@ -13,7 +13,7 @@ import WordPool from "../../components/Foliopool/WordPool";
  */
 const API_BASE = import.meta.env.VITE_API_BASE || "https://api.foliomax.in"; // "" uses proxy
 const API = {
-  LIST: `${API_BASE}/foliomax/api/files?type=excel`,
+  LIST: `${API_BASE}/foliomax/api/files`,
   PARSE: (id) => `${API_BASE}/foliomax/api/files/${id}/parse`,
   SHEET_META: (id, sheet = 0) => `${API_BASE}/foliomax/api/files/${id}/sheets/${sheet}/meta`,
   SHEET_CSV: (id, sheet = 0, start = 0, limit = 200) =>

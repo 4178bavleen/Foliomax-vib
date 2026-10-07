@@ -64,7 +64,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <FaVideo/>,
-    name: "Vedio Upload",
+    name: "Video Upload",
     path: "/video-upload",
   },
   {

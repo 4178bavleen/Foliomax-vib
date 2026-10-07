@@ -24,6 +24,9 @@ build/
 .nitro/
 .vite/
 
+# Merge leftovers (superseded copies of source files)
+_merge-artifacts/
+
 # =========================================================
 # Logs
 # =========================================================

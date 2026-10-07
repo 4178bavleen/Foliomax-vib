@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const MAX_UPLOAD_MB = Number(process.env.MAX_UPLOAD_MB || 10);
+const MAX_UPLOAD_MB = Number(process.env.MAX_UPLOAD_MB || 20);
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
 // Ensure folder exists at boot

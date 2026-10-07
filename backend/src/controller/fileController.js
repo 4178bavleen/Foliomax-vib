@@ -214,6 +214,9 @@ exports.parse = async (req, res) => {
             value = raw.text;
           } else if (typeof raw === 'object' && raw.richText) {
             value = raw.richText.map((rt) => rt.text).join('');
+          } else if (typeof raw === 'object' && raw.formula) {
+            const result = raw.result ?? (cell.text !== undefined ? cell.text : '');
+            value = result === null || result === undefined ? '' : String(result);
           } else {
             value = String(raw);
           }
@@ -467,18 +470,26 @@ exports.list = async (req, res) => {
         createdAt: true,
         pageName: true,
         isPremium: true,
+        driveUrl: true,
       },
     });
 
-    const data = rows.map((r) => ({
-      id: r.id,
-      name: r.name,
-      url: r.storagePath ? toPublicUrl(req, r.storagePath) : '',
-      size: r.sizeBytes ?? undefined,
-      uploadedAt: r.createdAt?.toISOString?.() ?? null,
-      pageName: r.pageName || null,
-      isPremium: r.isPremium || false,
-    }));
+    const data = rows.map((r) => {
+      const isDrive = !r.storagePath && !!r.driveUrl;
+      return {
+        id: r.id,
+        name: r.name,
+        url: r.storagePath
+          ? toPublicUrl(req, r.storagePath)
+          : r.driveUrl || '',
+        isDrive,
+        editable: !!r.storagePath,
+        size: r.sizeBytes ?? undefined,
+        uploadedAt: r.createdAt?.toISOString?.() ?? null,
+        pageName: r.pageName || null,
+        isPremium: r.isPremium || false,
+      };
+    });
 
     // keep same shape as before (plain array)
     return res.json(data);
@@ -523,11 +534,20 @@ exports.remove = async (req, res) => {
       try {
         await fs.unlink(abs + '.parsed.json');
       } catch (_) {}
-      // invalidate redis
-      try {
-        await redis.del(`excel:parsed:${id}`);
-      } catch (_) {}
     }
+
+    // Remove per-sheet csv/meta cache written by the parser worker
+    try {
+      await fs.rm(path.join(process.cwd(), 'public', 'uploads', 'parsed', String(id)), {
+        recursive: true,
+        force: true,
+      });
+    } catch (_) {}
+
+    // invalidate redis
+    try {
+      await redis.del(`excel:parsed:${id}`);
+    } catch (_) {}
 
     await prisma.excelfile.update({
       where: { id },
@@ -565,6 +585,13 @@ exports.overwrite = async (req, res) => {
     });
     if (!rec || rec.isDeleted) {
       return res.status(404).json({ ok: false, message: 'Not found' });
+    }
+    if (!rec.storagePath) {
+      return res.status(400).json({
+        ok: false,
+        message:
+          'Google Drive files cannot be overwritten. Edit the source file in Google Drive instead.',
+      });
     }
 
     const abs = path.join(
@@ -611,6 +638,203 @@ exports.overwrite = async (req, res) => {
   } catch (err) {
     console.error('overwrite file error:', err);
     return res.status(500).json({ ok: false, message: 'Overwrite failed' });
+  }
+};
+
+const MAX_EDIT_ROWS = 20000;
+const MAX_EDIT_COLS = 500;
+const MAX_EDIT_CELLS = 2000000;
+
+const NUMERIC_RE = /^-?(\d+|\d*\.\d+)([eE][+-]?\d+)?$/;
+
+/**
+ * Resolve the string coming from the editor into the value type that the cell
+ * already holds, so numeric columns and formulas survive a round-trip.
+ */
+function coerceCellValue(rawValue, existingCell) {
+  if (rawValue === null || rawValue === undefined) return null;
+  const asString = String(rawValue);
+
+  const existing = existingCell ? existingCell.value : null;
+  const existingIsFormula =
+    existing && typeof existing === 'object' && existing.formula;
+
+  if (existingIsFormula) {
+    const currentResult = existingCell.result;
+    if (String(currentResult ?? '') === asString.trim()) {
+      return undefined;
+    }
+    return asString === '' ? null : asString;
+  }
+
+  if (asString === '') return null;
+
+  const existingIsNumber = typeof existing === 'number';
+  if (existingIsNumber && NUMERIC_RE.test(asString.trim())) {
+    return Number(asString.trim());
+  }
+
+  return asString;
+}
+
+/**
+ * PATCH /api/files/:id/sheets/:sheetIndex
+ * body: { rows: string[][] }
+ *
+ * Writes cell VALUES only, for a single sheet, using ExcelJS. Every other
+ * sheet and every style/format/merge in the workbook is left untouched.
+ */
+exports.updateSheet = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const sheetIndex = Number(req.params.sheetIndex);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ ok: false, message: 'Invalid id' });
+    }
+    if (!Number.isInteger(sheetIndex) || sheetIndex < 0) {
+      return res
+        .status(400)
+        .json({ ok: false, message: 'Invalid sheet index' });
+    }
+
+    const rows = req.body?.rows;
+    if (!Array.isArray(rows)) {
+      return res
+        .status(400)
+        .json({ ok: false, message: "Body must include a 'rows' array" });
+    }
+    if (rows.length > MAX_EDIT_ROWS) {
+      return res.status(400).json({
+        ok: false,
+        message: `Too many rows (max ${MAX_EDIT_ROWS})`,
+      });
+    }
+
+    const width = rows.reduce(
+      (m, r) => Math.max(m, Array.isArray(r) ? r.length : 0),
+      0,
+    );
+    if (width > MAX_EDIT_COLS) {
+      return res.status(400).json({
+        ok: false,
+        message: `Too many columns (max ${MAX_EDIT_COLS})`,
+      });
+    }
+    if (rows.length * Math.max(width, 1) > MAX_EDIT_CELLS) {
+      return res.status(400).json({
+        ok: false,
+        message: 'Sheet is too large to save through the editor',
+      });
+    }
+
+    const rec = await prisma.excelfile.findUnique({
+      where: { id },
+      select: { id: true, storagePath: true, isDeleted: true },
+    });
+    if (!rec || rec.isDeleted) {
+      return res.status(404).json({ ok: false, message: 'Not found' });
+    }
+    if (!rec.storagePath) {
+      return res.status(400).json({
+        ok: false,
+        message:
+          'Google Drive files cannot be edited here. Edit the source file in Google Drive instead.',
+      });
+    }
+
+    const abs = path.join(
+      process.cwd(),
+      'public',
+      rec.storagePath.replace(/^uploads[\\/]/, 'uploads/'),
+    );
+
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.readFile(abs);
+
+    const ws = wb.worksheets[sheetIndex];
+    if (!ws) {
+      return res
+        .status(404)
+        .json({ ok: false, message: `Sheet ${sheetIndex} not found` });
+    }
+
+    const prevRowCount = ws.rowCount;
+    const prevColCount = ws.columnCount;
+    const nextRowCount = Math.max(rows.length, prevRowCount);
+    const nextColCount = Math.max(width, prevColCount);
+
+    let written = 0;
+    let skippedErrors = 0;
+
+    for (let r = 0; r < nextRowCount; r++) {
+      const incoming = Array.isArray(rows[r]) ? rows[r] : null;
+      if (!incoming && r >= rows.length) continue;
+
+      const row = ws.getRow(r + 1);
+      for (let c = 0; c < nextColCount; c++) {
+        const cell = row.getCell(c + 1);
+        const raw = incoming && c < incoming.length ? incoming[c] : '';
+        const next = coerceCellValue(raw, cell);
+        if (next === undefined) continue;
+        if (cell.value !== null && cell.value !== undefined && cell.value === next) {
+          continue;
+        }
+        try {
+          cell.value = next;
+          written++;
+        } catch (e) {
+          skippedErrors++;
+        }
+      }
+    }
+
+    const tmpPath = `${abs}.tmp-${process.pid}`;
+    await wb.xlsx.writeFile(tmpPath);
+    await fs.rename(tmpPath, abs);
+
+    const stat = await fs.stat(abs);
+    await prisma.excelfile.update({
+      where: { id },
+      data: { sizeBytes: stat.size, isActive: true },
+    });
+
+    try {
+      await fs.unlink(abs + '.parsed.json');
+    } catch (_) {}
+    try {
+      await redis.del(`excel:parsed:${id}`);
+    } catch (_) {}
+    try {
+      await fs.rm(
+        path.join(process.cwd(), 'public', 'uploads', 'parsed', String(id)),
+        { recursive: true, force: true },
+      );
+    } catch (_) {}
+
+    produce(
+      EXCEL_TOPIC,
+      id,
+      {
+        fileId: id,
+        storagePath: rec.storagePath,
+        version: Date.now().toString(),
+        uploadedAt: new Date().toISOString(),
+      },
+    ).catch(() => {});
+
+    return res.json({
+      ok: true,
+      sheetIndex,
+      sheetName: ws.name,
+      writtenCells: written,
+      skippedErrors,
+    });
+  } catch (err) {
+    console.error('updateSheet error:', err);
+    return res
+      .status(500)
+      .json({ ok: false, message: err.message || 'Save failed' });
   }
 };
 
