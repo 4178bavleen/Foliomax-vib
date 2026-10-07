@@ -12,6 +12,9 @@ const paymentRoutes = require("./routes/paymentRoutes");
 
 const yahooStocks = require("./routes/PopularStocks/yahooStocks");
 const app = express();
+// Behind nginx: honour X-Forwarded-Proto/For so absolute file URLs come out
+// https:// and req.ip stays the real client (rate limits, uploads).
+app.set("trust proxy", 1);
 app.use(express.json());
 
 // ---------- CORS (add before routes) ----------
