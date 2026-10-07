@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `otp` VARCHAR(191) NULL,
+    ADD COLUMN `otpAttempts` INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN `otpExpiry` DATETIME(3) NULL;
