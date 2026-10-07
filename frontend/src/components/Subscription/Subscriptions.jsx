@@ -8,13 +8,13 @@ const API_BASE = import.meta.env.VITE_API_BASE || "https://api.foliomax.in";
 function Subscriptions() {
   const [pdfs, setPdfs] = useState([]);
   const [excels, setExcels] = useState([]); // ✅ ADDED
+  const [courses, setCourses] = useState([]);
 
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showPlans, setShowPlans] = useState(false);
 
   const [loading, setLoading] = useState(true);
-  const [hoveredId, setHoveredId] = useState(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ function Subscriptions() {
   useEffect(() => {
     fetchSubscriptions();
     fetchExcels(); // ✅ ADDED
+    fetchCourses();
     fetchSubscriptionStatus();
     fetchPlans();
   }, []);
@@ -73,7 +74,9 @@ function Subscriptions() {
 
       const data = await res.json();
       if (data.ok) setIsSubscribed(data.active);
-    } catch {}
+    } catch {
+      // status check is best-effort
+    }
   };
 
   /* ===============================
@@ -113,9 +116,28 @@ function Subscriptions() {
 };
 
 /* ===============================
-     VIEW EXCEL
+     FETCH COURSES
    =============================== */
-  const handleViewExcel = async (excel) => {
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/foliomax/courses/active`);
+      const data = await res.json();
+      if (data.ok) setCourses(data.data || []);
+    } catch {
+      toast.error("Failed to load courses");
+    }
+  };
+
+  /* ===============================
+     VIEW COURSE → dedicated player page
+   =============================== */
+  const handleViewCourse = (course) => {
+    navigate(`/course/${course.id}`);
+  };
+
+  /* ===============================
+     VIEW EXCEL
+   =============================== */  const handleViewExcel = async (excel) => {
     const token = sessionStorage.getItem("foliomax_accessToken");
 
     // 🔒 Not logged in
@@ -426,6 +448,77 @@ function Subscriptions() {
                 </div>
               );
             })}
+
+          {/* ================= COURSES ================= */}
+          {!loading &&
+            courses.map((c) => (
+              <div key={c.id} className="col-lg-4 col-md-6 col-sm-12 service-block">
+                <div className="service-block-one">
+                  <div className="inner-box fm-card">
+
+                    <h6>
+                      <span style={{
+                        background: "#722ed1",
+                        color: "#fff",
+                        padding: "3px 8px",
+                        borderRadius: "4px",
+                        fontSize: "12px"
+                      }}>
+                        COURSE
+                      </span>
+
+                      <span className="fm-badge">
+                        {c.plan ? c.plan.name : "Free"}
+                      </span>
+                    </h6>
+
+                    {c.thumbnailUrl && (
+                      <img
+                        src={c.thumbnailUrl}
+                        alt={c.title}
+                        style={{
+                          width: "100%",
+                          height: "170px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          marginBottom: "14px",
+                        }}
+                      />
+                    )}
+
+                    <h3>{c.title}</h3>
+
+                    <p className="fm-subtext">
+                      {[c.category, c.duration ? `${c.duration} mins` : null]
+                        .filter(Boolean)
+                        .join(" · ") || "Course material"}
+                    </p>
+
+                    {c.description && (
+                      <p style={{ color: "#555", fontSize: "14px" }}>
+                        {c.description}
+                      </p>
+                    )}
+
+                    <ul className="fm-points">
+                      {c.category && <li>✔ {c.category}</li>}
+                      {c.duration && <li>✔ {c.duration} mins of learning</li>}
+                      <li>✔ Instant access after unlock</li>
+                    </ul>
+
+                    <div className="btn-box mt-3">
+                      <button
+                        className={c.plan && !isSubscribed ? "premium-btn cta" : "premium-btn"}
+                        onClick={() => handleViewCourse(c)}
+                      >
+                        {c.plan && !isSubscribed ? "🔒 Preview Course" : "View Course"}
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            ))}
 
         </div>
       </div>

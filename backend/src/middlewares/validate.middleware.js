@@ -7,9 +7,11 @@ exports.validate = (schema) => (req, res, next) => {
     next();
   } catch (err) {
     if (err instanceof ZodError) {
+      // Zod v4 exposes issues (v3 also had .errors as an alias)
+      const issues = err.issues || err.errors || [];
       return res.status(400).json({
         ok: false,
-        error: err.errors[0].message, // returns first validation error message
+        error: issues[0]?.message || "Validation failed",
       });
     }
     return res.status(500).json({ ok: false, error: "Validation failed" });

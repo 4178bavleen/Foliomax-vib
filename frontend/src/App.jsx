@@ -36,6 +36,7 @@ import RetirementCalculator from './components/RetirementCalculator/RetirementCa
 import ETFMutualFund from './pages/ETF&MutualFund'
 import DetailedBlog from './pages/DetailedBlog'
 import ExcelViewer from './pages/ExcelViewer';
+import CoursePlayer from './pages/CoursePlayer';
 import Transaction from './pages/customer/Transactions/Transactions';
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
           <Route path="/terms-conditions" element={<TermsAndCond />} />
           <Route path="/learn-with-us" element={<LearnWithUs />} />
           <Route path="/excel/:id" element={<ExcelViewer />} />
+          <Route path="/course/:id" element={<CoursePlayer />} />
         </Route>
 
         {/*  Auth pages WITHOUT MainLayout */}

@@ -1,0 +1,35 @@
+{
+  "name": "@yourorg/protected-content",
+  "version": "1.0.0",
+  "description": "Comprehensive client-side website protection: PrintScreen detection, blackout overlay, dynamic watermark, print shielding, and anti-tamper observer.",
+  "author": "YourOrg",
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "protection",
+    "screenshot-protection",
+    "printscreen",
+    "watermark",
+    "anti-tamper",
+    "print-shield",
+    "drm",
+    "security"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "test": "node test/run-tests.js"
+  }
+}

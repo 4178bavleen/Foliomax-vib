@@ -16,6 +16,7 @@ const Login = () => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // ✅ added
   const [message, setMessage] = useState(null);
+  const [resending, setResending] = useState(false);
 
   const [isOtpMode, setIsOtpMode] = useState(false);
   const [otp, setOtp] = useState("");
@@ -75,9 +76,13 @@ const Login = () => {
       setLoading(false);
 
       if (!res.ok || !data.ok) {
+        const needsVerification =
+          res.status === 403 && /verify email/i.test(data.error || "");
+
         return setMessage({
           type: "error",
           text: data.error || "Invalid credentials",
+          action: needsVerification ? "resend" : undefined,
         });
       }
 
@@ -97,6 +102,47 @@ const Login = () => {
         type: "error",
         text: "Server error. Please try again.",
       });
+    }
+  };
+
+  /* ================= RESEND VERIFICATION EMAIL ================= */
+  const handleResendVerification = async () => {
+    const email = form.email.trim().toLowerCase();
+
+    if (!email) {
+      return setMessage({ type: "error", text: "Enter your email first" });
+    }
+
+    setResending(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE}/foliomax/auth/resend-verification`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        return setMessage({
+          type: "error",
+          text: data.error || "Failed to resend verification email",
+        });
+      }
+
+      setMessage({ type: "success", text: data.message });
+    } catch {
+      setMessage({
+        type: "error",
+        text: "Network error. Try again.",
+      });
+    } finally {
+      setResending(false);
     }
   };
 
@@ -250,6 +296,18 @@ const Login = () => {
             {message && (
               <div className={`h-msg ${message.type}`}>
                 {message.text}
+                {message.action === "resend" && (
+                  <div>
+                    <button
+                      type="button"
+                      className="h-resend-btn"
+                      onClick={handleResendVerification}
+                      disabled={resending}
+                    >
+                      {resending ? "Sending..." : "Resend verification email"}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

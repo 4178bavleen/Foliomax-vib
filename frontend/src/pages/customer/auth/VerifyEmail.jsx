@@ -8,6 +8,43 @@ const VerifyEmail = () => {
 
   const [status, setStatus] = useState("loading"); // loading | success | error
   const [message, setMessage] = useState("Verifying your email...");
+  const [resending, setResending] = useState(false);
+  const [resendMsg, setResendMsg] = useState(null);
+
+  const linkEmail = searchParams.get("email");
+
+  const handleResend = async () => {
+    if (!linkEmail || resending) return;
+
+    setResending(true);
+    setResendMsg(null);
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE}/foliomax/auth/resend-verification`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: linkEmail }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        setResendMsg({
+          type: "error",
+          text: data.error || "Failed to resend verification email.",
+        });
+      } else {
+        setResendMsg({ type: "success", text: data.message });
+      }
+    } catch {
+      setResendMsg({ type: "error", text: "Network error. Try again." });
+    } finally {
+      setResending(false);
+    }
+  };
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -85,13 +122,48 @@ const VerifyEmail = () => {
             )}
 
             {isError && (
-              <button
-                type="button"
-                className="h-primary-btn"
-                onClick={() => navigate("/signup")}
-              >
-                Create a new account
-              </button>
+              <>
+                {linkEmail && (
+                  <div style={{ textAlign: "center", marginBottom: "10px" }}>
+                    <button
+                      type="button"
+                      className="h-primary-btn"
+                      onClick={handleResend}
+                      disabled={resending}
+                      style={{ width: "auto", padding: "10px 18px" }}
+                    >
+                      {resending
+                        ? "Sending..."
+                        : "Resend verification email"}
+                    </button>
+                  </div>
+                )}
+
+                {resendMsg && (
+                  <p
+                    style={{
+                      background:
+                        resendMsg.type === "error" ? "#ffdddd" : "#ddffdd",
+                      color: resendMsg.type === "error" ? "#b30000" : "#006600",
+                      padding: "10px",
+                      borderRadius: "6px",
+                      margin: "0 0 16px",
+                      textAlign: "center",
+                      fontSize: "13px",
+                    }}
+                  >
+                    {resendMsg.text}
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  className="h-primary-btn"
+                  onClick={() => navigate("/signup")}
+                >
+                  Create a new account
+                </button>
+              </>
             )}
           </div>
 

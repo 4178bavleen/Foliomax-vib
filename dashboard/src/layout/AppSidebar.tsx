@@ -86,7 +86,8 @@ const navItems: NavItem[] = [
     subItems: [
       {name:"Subscription Plans",path:"/subscriptions"},
       {name:"PDF Upload", path:"/subs-pdf-upload"},
-      {name:"Excel Upload", path:"/excel-upload"}
+      {name:"Excel Upload", path:"/excel-upload"},
+      {name:"Course Upload", path:"/course-upload"}
     ],
    
   },

@@ -42,6 +42,7 @@ import AllInsights from "./pages/ETF&Mutual/AllInsights.jsx";
 import PdfUploadPage from "./pages/PdfUpload/PdfUpload.js";
 import Subscriptions from "./pages/Subscription/Subscriptions.jsx";
 import PdfUploadSubscriptionPage from "./pages/Subscription/PdfUploadSubscriptionPage.jsx";
+import CourseUpload from "./pages/Subscription/CourseUpload.jsx";
 
 export default function App() {
   
@@ -83,6 +84,7 @@ export default function App() {
 
             <Route path="/subscriptions" element={<Subscriptions/>}/>
             <Route path="/subs-pdf-upload" element={<PdfUploadSubscriptionPage/>}/>
+            <Route path="/course-upload" element={<CourseUpload/>}/>
             <Route path="/site-content" element={<SiteContent/>}/>
             <Route path="/customer-message" element={<CustomerMessage/>}/>
             <Route path="/manage-category" element={<ManageCategories />} />

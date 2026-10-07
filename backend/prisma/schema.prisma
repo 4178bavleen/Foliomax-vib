@@ -297,6 +297,34 @@ model subscriptionplan {
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   usersubscription usersubscription[]
+  courses          course[]
+}
+
+model course {
+  id           Int               @id @default(autoincrement())
+  title        String
+  description  String?           @db.LongText
+  category     String?
+  duration     Int?
+  sortOrder    Int               @default(0)
+  status       String           @default("active") // active | draft
+  fileName     String
+  filePath     String
+  fileUrl      String
+  fileSize     Int?
+  fileType     String? // raw extension: mp4, pdf, pptx...
+  fileKind     String? // video | presentation | document | spreadsheet | archive | other
+  mimeType     String?
+  thumbnail    String?
+  thumbnailUrl String?
+  planId       Int?
+  plan         subscriptionplan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  uploadedById Int?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([status])
+  @@index([planId])
 }
 
 model tag {

@@ -429,6 +429,29 @@
   color: #006600;
 }
 
+/* Resend verification email button (rendered inside message boxes) */
+.h-resend-btn {
+  margin-top: 8px;
+  border: 1px solid currentColor;
+  background: rgba(255, 255, 255, 0.7);
+  color: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.h-resend-btn:hover {
+  opacity: 0.85;
+}
+
+.h-resend-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .h-otp-container {
   display: flex;
   gap: 10px;

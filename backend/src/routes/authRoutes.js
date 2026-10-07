@@ -5,6 +5,7 @@ const {
   register,
   login,
   verifyEmail,
+  resendVerification,
   refresh,
   logout,
   forgotPassword,
@@ -25,6 +26,7 @@ const {
 // PUBLIC ROUTES
 router.post("/register", validate(registerSchema), register);
 router.get("/verify-email", verifyEmail);
+router.post("/resend-verification", validate(resetSchema), resendVerification);
 router.post("/login", validate(loginSchema), login);
 router.post("/refresh", refresh);
 router.post("/forgot-password", validate(resetSchema), forgotPassword);
