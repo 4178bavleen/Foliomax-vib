@@ -27,4 +27,4 @@ CREATE TABLE `course` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `course` ADD CONSTRAINT `course_planId_fkey` FOREIGN KEY (`planId`) REFERENCES `subscriptionplan`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `course` ADD CONSTRAINT `course_planId_fkey` FOREIGN KEY (`planId`) REFERENCES `SubscriptionPlan`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

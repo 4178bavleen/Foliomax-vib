@@ -489,6 +489,8 @@ model subscriptionplan {
 
   usersubscription usersubscription[]
   courses          course[]
+
+  @@map("SubscriptionPlan")
 }
 
 model course {
