@@ -89,6 +89,15 @@ const loginLimiter = rateLimit({
 
 // place login limiter on the login route
 app.use("/foliomax/auth/login", loginLimiter);
+
+// Rate limit resend verification: max 5 requests per 15 mins per IP (prevents email bombing)
+const resendVerificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { ok: false, error: "Too many resend attempts, try again later" },
+});
+app.use("/foliomax/auth/resend-verification", resendVerificationLimiter);
+
 app.use("/foliomax",contactRoutes);
 // mount routes (after CORS)
 app.use("/foliomax/auth", authRoute);
@@ -123,6 +132,9 @@ app.use("/foliomax/payment", paymentRoutes);
 
 app.use("/foliomax/admin/subscription", require("./routes/Admin/Subscriptions/subscriptionRoutes"));
 app.use("/foliomax/subscription", require("./routes/Admin/Subscriptions/subscriptionRoutes"));
+
+app.use("/foliomax/admin/courses", require("./routes/Admin/Courses/courseRoutes"));
+app.use("/foliomax/courses", require("./routes/Admin/Courses/courseRoutes"));
 
 app.get("/", (req, res) => {
   res.send(`

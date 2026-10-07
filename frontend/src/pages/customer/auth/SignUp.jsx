@@ -15,6 +15,7 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
+  const [resending, setResending] = useState(false);
 
   // ===============================
   // Validators
@@ -112,7 +113,10 @@ const Signup = () => {
       }
 
       if (!res.ok) {
-        throw new Error(data?.error || "Registration failed.");
+        const error = new Error(data?.error || "Registration failed.");
+        // Account exists but verification email was never received/clicked
+        if (res.status === 409) error.action = "resend";
+        throw error;
       }
 
       setMessage({
@@ -125,10 +129,51 @@ const Signup = () => {
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.message || "Server error. Try again later."
+        text: err.message || "Server error. Try again later.",
+        action: err.action
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ===============================
+  // Resend verification email (409 dead-end)
+  // ===============================
+  const handleResendVerification = async () => {
+    const email = form.email.trim().toLowerCase();
+
+    if (!validateEmail(email)) {
+      return setMessage({ type: "error", text: "Enter a valid email first." });
+    }
+
+    setResending(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE}/foliomax/auth/resend-verification`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data?.error || "Failed to resend verification email.");
+      }
+
+      setMessage({ type: "success", text: data.message });
+    } catch (err) {
+      setMessage({
+        type: "error",
+        text: err.message || "Server error. Try again later."
+      });
+    } finally {
+      setResending(false);
     }
   };
 
@@ -155,6 +200,18 @@ const Signup = () => {
                 }}
               >
                 {message.text}
+                {message.action === "resend" && (
+                  <div>
+                    <button
+                      type="button"
+                      className="h-resend-btn"
+                      onClick={handleResendVerification}
+                      disabled={resending}
+                    >
+                      {resending ? "Sending..." : "Resend verification email"}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

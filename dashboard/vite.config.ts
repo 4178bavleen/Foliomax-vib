@@ -18,4 +18,8 @@ export default defineConfig({
   esbuild: {
     logOverride: { "this-is-undefined-in-esm": "silent" },
   },
+  server: {
+    port: 5174,
+    strictPort: true,
+  },
 });

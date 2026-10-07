@@ -8,7 +8,8 @@ const prisma = new PrismaClient();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret';
 const REFRESH_SECRET = process.env.REFRESH_SECRET || 'refresh_secret';
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+// Strip trailing slashes so links never contain "//" (React Router won't match those)
+const CLIENT_URL = (process.env.CLIENT_URL || "http://localhost:3000").replace(/\/+$/, "");
 
 // -------------------- Helper Functions --------------------
 const validatePasswordStrength = (password) =>
@@ -124,7 +125,8 @@ exports.register = async (req, res) => {
         verifyLink,
         dashboardLink: `${CLIENT_URL}/customer`,
         privacyLink: `${CLIENT_URL}/privacy-policy`,
-        unsubscribeLink: `${CLIENT_URL}/unsubscribe`
+        unsubscribeLink: `${CLIENT_URL}/unsubscribe`,
+        year: new Date().getFullYear().toString()
       }
     ).catch((err) => {
       console.error("Email sending failed:", err.message);
@@ -197,6 +199,83 @@ exports.verifyEmail = async (req, res) => {
   } catch (err) {
     console.error("VERIFY ERROR:", err);
     return res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+// =========================================================
+// RESEND VERIFICATION EMAIL
+// =========================================================
+exports.resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ ok: false, error: "Email is required" });
+    }
+
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail }
+    });
+
+    // Always respond ok for unknown emails (to avoid user enumeration)
+    const genericMessage =
+      "If an account with that email exists and is not verified, a verification link has been sent.";
+
+    if (!user) {
+      return res.json({ ok: true, message: genericMessage });
+    }
+
+    if (user.emailVerified) {
+      return res.json({
+        ok: true,
+        alreadyVerified: true,
+        message: "This email is already verified. Please sign in."
+      });
+    }
+
+    // Fresh token so the new link always works (old links are invalidated)
+    const token = crypto.randomBytes(32).toString("hex");
+    const verificationExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { verificationToken: token, verificationExpiry }
+    });
+
+    const verifyLink = `${CLIENT_URL}/verify-email?token=${token}&email=${encodeURIComponent(normalizedEmail)}`;
+
+    const result = await sendEmail(
+      normalizedEmail,
+      "Verify your email - Foliomax",
+      "verifyEmail.html",
+      {
+        name: user.name || "",
+        verifyLink,
+        dashboardLink: `${CLIENT_URL}/customer`,
+        privacyLink: `${CLIENT_URL}/privacy-policy`,
+        unsubscribeLink: `${CLIENT_URL}/unsubscribe`,
+        year: new Date().getFullYear().toString()
+      }
+    );
+
+    // sendEmail never throws — check its result so SMTP failures surface to the user
+    if (!result.success) {
+      console.error("RESEND VERIFICATION EMAIL FAILED:", result.error);
+      return res.status(502).json({
+        ok: false,
+        error: "Could not send the verification email. Please try again later."
+      });
+    }
+
+    return res.json({
+      ok: true,
+      message: "Verification email sent. Please check your inbox."
+    });
+  } catch (err) {
+    console.error("RESEND VERIFICATION ERROR:", err);
+    return res.status(500).json({ ok: false, error: "Server error" });
   }
 };
 
