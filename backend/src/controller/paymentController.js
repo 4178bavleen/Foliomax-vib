@@ -2,8 +2,8 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const {
   PrismaClient,
-  PaymentMethod,
-  PaymentStatus,
+  payment_method,
+  payment_status,
 } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -19,17 +19,17 @@ const razorpay = new Razorpay({
 function mapPaymentMethod(method) {
   switch (method) {
     case "card":
-      return PaymentMethod.CARD;
+      return payment_method.CARD;
     case "upi":
-      return PaymentMethod.UPI;
+      return payment_method.UPI;
     case "netbanking":
-      return PaymentMethod.NETBANKING;
+      return payment_method.NETBANKING;
     case "wallet":
-      return PaymentMethod.WALLET;
+      return payment_method.WALLET;
     case "emi":
-      return PaymentMethod.EMI;
+      return payment_method.EMI;
     default:
-      return PaymentMethod.UNKNOWN;
+      return payment_method.UNKNOWN;
   }
 }
 
@@ -69,7 +69,7 @@ exports.createOrder = async (req, res) => {
         razorpayOrderId: order.id,
         amount: plan.price*100,
         currency: "INR",
-        status: PaymentStatus.CREATED,
+        status: payment_status.CREATED,
         // 🔥 store planId directly (IMPORTANT)
         subscriptions: {
           create: {
@@ -126,7 +126,7 @@ exports.verifyPayment = async (req, res) => {
     }
 
     /* 🛑 IDEMPOTENCY */
-    if (payment.status === PaymentStatus.SUCCESS) {
+    if (payment.status === payment_status.SUCCESS) {
       return res.json({ success: true });
     }
 
@@ -141,7 +141,7 @@ exports.verifyPayment = async (req, res) => {
       data: {
         razorpayPaymentId: razorpay_payment_id,
         razorpaySignature: razorpay_signature,
-        status: PaymentStatus.SUCCESS,
+        status: payment_status.SUCCESS,
         method: mapPaymentMethod(rzpPayment.method),
         email: rzpPayment.email,
         contact: rzpPayment.contact,
@@ -249,7 +249,7 @@ exports.razorpayWebhook = async (req, res) => {
       await prisma.payment.updateMany({
         where: { razorpayOrderId: payment.order_id },
         data: {
-          status: PaymentStatus.FAILED,
+          status: payment_status.FAILED,
           rawResponse: payment,
         },
       });

@@ -1,4 +1,4 @@
-const { PrismaClient, PaymentStatus } = require("@prisma/client");
+const { PrismaClient, payment_status } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
@@ -32,7 +32,7 @@ exports.getMyTransactions = async (req, res) => {
       userId,
     };
 
-    if (status && Object.values(PaymentStatus).includes(status)) {
+    if (status && Object.values(payment_status).includes(status)) {
       where.status = status;
     }
 
@@ -75,7 +75,7 @@ exports.getMyTransactions = async (req, res) => {
       prisma.payment.aggregate({
         where: {
           userId,
-          status: PaymentStatus.SUCCESS,
+          status: payment_status.SUCCESS,
         },
         _sum: {
           amount: true,
