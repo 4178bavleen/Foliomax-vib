@@ -228,35 +228,49 @@ function Subscriptions() {
 
       const order = await res.json();
 
+      if (!res.ok || !order?.id) {
+        toast.error(order?.error || order?.detail || "Failed to create payment order");
+        return;
+      }
+
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: order.amount,
-        currency: order.currency,
+        currency: order.currency || "INR",
         name: "FolioMax",
         description: selectedPlan.name,
         order_id: order.id,
 
         handler: async (response) => {
-          const verifyRes = await fetch(
-            `${API_BASE}/foliomax/payment/verify`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify(response),
+          try {
+            const verifyRes = await fetch(
+              `${API_BASE}/foliomax/payment/verify`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  ...response,
+                  planId: selectedPlan.id,
+                }),
+              }
+            );
+
+            const verifyData = await verifyRes.json();
+
+            if (verifyRes.ok && verifyData.success) {
+              toast.success("Subscription Activated 🎉");
+              setIsSubscribed(true);
+              setShowPlans(false);
+              fetchSubscriptionStatus();
+            } else {
+              toast.error(verifyData.error || "Payment verification failed");
             }
-          );
-
-          const verifyData = await verifyRes.json();
-
-          if (verifyData.success) {
-            toast.success("Subscription Activated 🎉");
-            setIsSubscribed(true);
-            setShowPlans(false);
-          } else {
-            toast.error("Payment failed");
+          } catch (verifyErr) {
+            console.error("Verification error:", verifyErr);
+            toast.error("Payment verification failed");
           }
         },
       };
@@ -264,7 +278,8 @@ function Subscriptions() {
       const rzp = new window.Razorpay(options);
       rzp.open();
 
-    } catch {
+    } catch (err) {
+      console.error("Payment error:", err);
       toast.error("Payment error");
     }
   };

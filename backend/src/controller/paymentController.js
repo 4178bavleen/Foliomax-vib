@@ -63,11 +63,11 @@ exports.createOrder = async (req, res) => {
       data: {
         userId,
         razorpayOrderId: order.id,
-        amount: plan.price*100,
+        amount: plan.price * 100,
         currency: "INR",
         status: $Enums.payment_status.CREATED,
         // 🔥 store planId directly (IMPORTANT)
-        subscriptions: {
+        usersubscription: {
           create: {
             userId,
             planId: plan.id,
@@ -95,73 +95,192 @@ exports.verifyPayment = async (req, res) => {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
+      planId,
     } = req.body;
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).json({ error: "Missing parameters" });
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    /* 🔐 SIGNATURE VERIFY */
-    const expected = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
-
-    if (expected !== razorpay_signature) {
-      return res.status(400).json({ error: "Invalid signature" });
+    if (!razorpay_payment_id) {
+      return res.status(400).json({ error: "Missing parameters: razorpay_payment_id required" });
     }
 
-    /* 🔎 FETCH PAYMENT */
-    const payment = await prisma.payment.findUnique({
-      where: { razorpayOrderId: razorpay_order_id },
-      include: { subscriptions: true },
-    });
+    /* 🔐 1. SIGNATURE VERIFY (If order_id and signature are present) */
+    if (razorpay_order_id && razorpay_signature) {
+      const expected = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest("hex");
+
+      if (expected !== razorpay_signature) {
+        return res.status(400).json({ error: "Invalid signature" });
+      }
+    }
+
+    /* 🔎 2. FETCH FROM RAZORPAY */
+    let rzpPayment;
+    try {
+      rzpPayment = await razorpay.payments.fetch(razorpay_payment_id);
+    } catch (rzpErr) {
+      console.error("Fetch Razorpay Payment Error:", rzpErr);
+      return res.status(400).json({ error: "Payment not found on Razorpay", detail: rzpErr.message });
+    }
+
+    if (!rzpPayment || (rzpPayment.status !== "captured" && rzpPayment.status !== "authorized")) {
+      return res.status(400).json({ error: `Payment is not successful (status: ${rzpPayment?.status})` });
+    }
+
+    // Auto-capture if authorized
+    if (rzpPayment.status === "authorized") {
+      try {
+        rzpPayment = await razorpay.payments.capture(
+          razorpay_payment_id,
+          rzpPayment.amount,
+          rzpPayment.currency
+        );
+      } catch (capErr) {
+        console.error("Capture warning:", capErr.message);
+      }
+    }
+
+    /* 🔎 3. FIND PAYMENT IN DB */
+    const effectiveOrderId = razorpay_order_id || rzpPayment.order_id;
+    let payment = null;
+
+    if (effectiveOrderId) {
+      payment = await prisma.payment.findUnique({
+        where: { razorpayOrderId: effectiveOrderId },
+        include: { usersubscription: true },
+      });
+    }
 
     if (!payment) {
-      return res.status(404).json({ error: "Payment not found" });
+      payment = await prisma.payment.findFirst({
+        where: { razorpayPaymentId: razorpay_payment_id },
+        include: { usersubscription: true },
+      });
     }
 
-    /* 🛑 IDEMPOTENCY */
-    if (payment.status === $Enums.payment_status.SUCCESS) {
-      return res.json({ success: true });
+    /* 🛑 IDEMPOTENCY: Already marked SUCCESS */
+    if (payment && payment.status === $Enums.payment_status.SUCCESS) {
+      return res.json({ success: true, message: "Payment already verified" });
     }
 
-    /* 🔎 FETCH FROM RAZORPAY */
-    const rzpPayment = await razorpay.payments.fetch(
-      razorpay_payment_id
-    );
+    /* 4. CREATE PAYMENT IF MISSING (e.g. orderless payment or initial creation failed) */
+    if (!payment) {
+      let targetPlan = null;
+      if (planId) {
+        targetPlan = await prisma.subscriptionplan.findUnique({
+          where: { id: Number(planId) },
+        });
+      }
 
-    /* ✅ UPDATE PAYMENT */
-    const updatedPayment = await prisma.payment.update({
-      where: { razorpayOrderId: razorpay_order_id },
-      data: {
-        razorpayPaymentId: razorpay_payment_id,
-        razorpaySignature: razorpay_signature,
-        status: $Enums.payment_status.SUCCESS,
-        method: mapPaymentMethod(rzpPayment.method),
-        email: rzpPayment.email,
-        contact: rzpPayment.contact,
-        paidAt: new Date(rzpPayment.created_at * 1000),
-        rawResponse: rzpPayment,
-      },
-    });
+      if (!targetPlan) {
+        const amountInRupees = Math.round(rzpPayment.amount / 100);
+        targetPlan = await prisma.subscriptionplan.findFirst({
+          where: { price: amountInRupees, isActive: true },
+        }) || await prisma.subscriptionplan.findFirst({
+          where: { isActive: true },
+          orderBy: { price: "asc" },
+        });
+      }
+
+      if (!targetPlan) {
+        return res.status(404).json({ error: "Subscription plan not found" });
+      }
+
+      const orderRef = effectiveOrderId || `direct_${razorpay_payment_id}`;
+
+      payment = await prisma.payment.create({
+        data: {
+          userId,
+          razorpayOrderId: orderRef,
+          razorpayPaymentId: razorpay_payment_id,
+          razorpaySignature: razorpay_signature || null,
+          amount: rzpPayment.amount,
+          currency: rzpPayment.currency || "INR",
+          status: $Enums.payment_status.SUCCESS,
+          method: mapPaymentMethod(rzpPayment.method),
+          email: rzpPayment.email || null,
+          contact: rzpPayment.contact || null,
+          paidAt: new Date(rzpPayment.created_at * 1000),
+          rawResponse: rzpPayment,
+          usersubscription: {
+            create: {
+              userId,
+              planId: targetPlan.id,
+              startDate: new Date(),
+              endDate: new Date(),
+              status: "PENDING",
+            },
+          },
+        },
+        include: { usersubscription: true },
+      });
+    } else {
+      /* ✅ UPDATE EXISTING PAYMENT */
+      payment = await prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          razorpayPaymentId: razorpay_payment_id,
+          razorpaySignature: razorpay_signature || payment.razorpaySignature,
+          status: $Enums.payment_status.SUCCESS,
+          method: mapPaymentMethod(rzpPayment.method),
+          email: rzpPayment.email || payment.email,
+          contact: rzpPayment.contact || payment.contact,
+          paidAt: new Date(rzpPayment.created_at * 1000),
+          rawResponse: rzpPayment,
+        },
+        include: { usersubscription: true },
+      });
+    }
 
     /* ======================================================
        🔥 ACTIVATE SUBSCRIPTION
     ====================================================== */
-    const sub = payment.subscriptions[0];
+    let sub = payment.usersubscription?.[0];
+
     if (!sub) {
-      return res.status(500).json({ error: "Subscription not linked" });
+      let targetPlan = null;
+      if (planId) {
+        targetPlan = await prisma.subscriptionplan.findUnique({
+          where: { id: Number(planId) },
+        });
+      }
+      if (!targetPlan) {
+        targetPlan = await prisma.subscriptionplan.findFirst({
+          where: { isActive: true },
+          orderBy: { price: "asc" },
+        });
+      }
+
+      sub = await prisma.usersubscription.create({
+        data: {
+          userId,
+          planId: targetPlan.id,
+          paymentId: payment.id,
+          startDate: new Date(),
+          endDate: new Date(),
+          status: "PENDING",
+        },
+      });
     }
 
     const plan = await prisma.subscriptionplan.findUnique({
       where: { id: sub.planId },
     });
 
+    if (!plan) {
+      return res.status(500).json({ error: "Plan not found" });
+    }
+
     const existingActive = await prisma.usersubscription.findFirst({
       where: {
         userId: payment.userId,
         status: "ACTIVE",
+        id: { not: sub.id },
         endDate: { gte: new Date() },
       },
       orderBy: { endDate: "desc" },
@@ -182,14 +301,14 @@ exports.verifyPayment = async (req, res) => {
         startDate,
         endDate,
         status: "ACTIVE",
-        paymentId: updatedPayment.id,
+        paymentId: payment.id,
       },
     });
 
     return res.json({ success: true });
   } catch (err) {
     console.error("Verify Error:", err);
-    return res.status(500).json({ error: "Verification failed" });
+    return res.status(500).json({ error: "Verification failed", detail: err.message });
   }
 };
 
