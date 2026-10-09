@@ -1,10 +1,6 @@
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
-const {
-  PrismaClient,
-  payment_method,
-  payment_status,
-} = require("@prisma/client");
+const { PrismaClient, $Enums } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
@@ -19,17 +15,17 @@ const razorpay = new Razorpay({
 function mapPaymentMethod(method) {
   switch (method) {
     case "card":
-      return payment_method.CARD;
+      return $Enums.payment_method.CARD;
     case "upi":
-      return payment_method.UPI;
+      return $Enums.payment_method.UPI;
     case "netbanking":
-      return payment_method.NETBANKING;
+      return $Enums.payment_method.NETBANKING;
     case "wallet":
-      return payment_method.WALLET;
+      return $Enums.payment_method.WALLET;
     case "emi":
-      return payment_method.EMI;
+      return $Enums.payment_method.EMI;
     default:
-      return payment_method.UNKNOWN;
+      return $Enums.payment_method.UNKNOWN;
   }
 }
 
@@ -69,7 +65,7 @@ exports.createOrder = async (req, res) => {
         razorpayOrderId: order.id,
         amount: plan.price*100,
         currency: "INR",
-        status: payment_status.CREATED,
+        status: $Enums.payment_status.CREATED,
         // 🔥 store planId directly (IMPORTANT)
         subscriptions: {
           create: {
@@ -126,7 +122,7 @@ exports.verifyPayment = async (req, res) => {
     }
 
     /* 🛑 IDEMPOTENCY */
-    if (payment.status === payment_status.SUCCESS) {
+    if (payment.status === $Enums.payment_status.SUCCESS) {
       return res.json({ success: true });
     }
 
@@ -141,7 +137,7 @@ exports.verifyPayment = async (req, res) => {
       data: {
         razorpayPaymentId: razorpay_payment_id,
         razorpaySignature: razorpay_signature,
-        status: payment_status.SUCCESS,
+        status: $Enums.payment_status.SUCCESS,
         method: mapPaymentMethod(rzpPayment.method),
         email: rzpPayment.email,
         contact: rzpPayment.contact,
@@ -249,7 +245,7 @@ exports.razorpayWebhook = async (req, res) => {
       await prisma.payment.updateMany({
         where: { razorpayOrderId: payment.order_id },
         data: {
-          status: payment_status.FAILED,
+          status: $Enums.payment_status.FAILED,
           rawResponse: payment,
         },
       });
