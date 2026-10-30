@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Maximize2,
   Minimize2,
-  Download,
   Lock,
   RotateCcw,
   AlertCircle,
@@ -41,9 +40,10 @@ export default function PresentationViewer() {
 
   // Meta & Status
   const [pptMeta, setPptMeta] = useState(null);
-  const [fileUrl, setFileUrl] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [pollCount, setPollCount] = useState(0);
   const [error, setError] = useState(null);
   const [accessDenied, setAccessDenied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -91,20 +91,24 @@ export default function PresentationViewer() {
 
       setPptMeta(data);
 
-      const rawPptUrl = data.url.startsWith('http')
-        ? data.url
-        : `${API_BASE}/${data.url.replace(/^\/+/, '')}`;
-      const resolvedPptUrl = ensureHttps(rawPptUrl);
-      setFileUrl(resolvedPptUrl);
-
       // Resolve the direct PDF presentation URL (if available)
       if (data.pdfUrl) {
         const rawPdf = data.pdfUrl.startsWith('http')
           ? data.pdfUrl
           : `${API_BASE}/${data.pdfUrl.replace(/^\/+/, '')}`;
         setPdfUrl(ensureHttps(rawPdf));
+        setIsPreparing(false);
       } else {
         setPdfUrl('');
+        // Poll for conversion completion every 2.5s (up to 8 attempts = 20s)
+        if (pollCount < 8) {
+          setIsPreparing(true);
+          setTimeout(() => {
+            setPollCount((prev) => prev + 1);
+          }, 2500);
+        } else {
+          setIsPreparing(false);
+        }
       }
 
       setLoading(false);
@@ -113,7 +117,7 @@ export default function PresentationViewer() {
       setError(err.message || 'Unable to open presentation deck.');
       setLoading(false);
     }
-  }, [id]);
+  }, [id, pollCount]);
 
   useEffect(() => {
     loadPresentation();
@@ -241,114 +245,72 @@ export default function PresentationViewer() {
 
           <div className="pv-title-wrap">
             <span className="pv-brand-badge">
-              <Monitor size={14} /> PPT
+              <Monitor size={14} /> PRESENTATION
             </span>
             <h1 className="pv-page-title" title={presTitle}>
               {presTitle}
             </h1>
           </div>
 
-          {pptMeta?.size && (
-            <span className="pv-meta-badge pv-size-badge">
-              {formatBytes(pptMeta.size)}
-            </span>
-          )}
-
           <span className="pv-meta-badge pv-fidelity-badge">
-            <CheckCircle2 size={13} /> Original Presentation
+            <CheckCircle2 size={13} /> Original Slide View
           </span>
         </div>
 
         <div className="pv-nav-right">
-          {fileUrl && (
-            <a
-              href={fileUrl}
-              download={pptMeta?.originalFilename || `${presTitle}.pptx`}
-              className="pv-btn pv-btn-ghost pv-download-action"
-              title="Download original presentation file"
-            >
-              <Download size={15} />
-              <span>Download PPTX</span>
-            </a>
-          )}
-
-          {pdfUrl && (
-            <button
-              type="button"
-              className="pv-btn pv-btn-primary pv-fs-btn"
-              onClick={toggleFullscreen}
-              title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Presentation'}
-            >
-              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-              <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
-            </button>
-          )}
+          <button
+            type="button"
+            className="pv-btn pv-btn-primary pv-fs-btn"
+            onClick={toggleFullscreen}
+            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Slides'}
+          >
+            {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+          </button>
         </div>
       </div>
 
       {/* Main Presentation Card */}
       <div className="pv-viewer-card">
         {/* Presentation Canvas Stage */}
-        <div className="pv-canvas-stage">
+        <div
+          className="pv-canvas-stage"
+          onContextMenu={(e) => e.preventDefault()}
+        >
           {pdfUrl ? (
             <iframe
               title={presTitle}
               className="pv-presentation-frame"
-              src={`${pdfUrl}#toolbar=1&navpanes=1&view=Fit`}
+              src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
             />
+          ) : isPreparing ? (
+            <div className="pv-preparing-container">
+              <div className="pv-spinner-ring" />
+              <h3 className="pv-preparing-title">Preparing Presentation Slides</h3>
+              <p className="pv-preparing-desc">
+                Rendering original presentation formatting for on-screen viewing. Please wait a moment...
+              </p>
+            </div>
           ) : (
-            <div className="pv-resource-card">
-              <div className="pv-resource-icon-badge">
-                <Monitor size={36} />
+            <div className="pv-preparing-container">
+              <div className="pv-ready-icon-wrap">
+                <Monitor size={32} />
               </div>
-
-              <span className="pv-resource-pill">POWERPOINT PRESENTATION</span>
-
-              <h2 className="pv-resource-title">{presTitle}</h2>
-
-              <p className="pv-resource-subtitle">
-                Original presentation slide deck available for instant download. Preserves 100% of all original fonts, graphics, charts, and slide animations.
+              <h3 className="pv-preparing-title">Slide Preview Pending</h3>
+              <p className="pv-preparing-desc">
+                The slides are currently being prepared on the server for on-screen display.
               </p>
-
-              <div className="pv-resource-meta-grid">
-                <div className="pv-resource-meta-item">
-                  <span className="pv-resource-meta-label">Format</span>
-                  <span className="pv-resource-meta-val">Microsoft PowerPoint (.pptx)</span>
-                </div>
-                {pptMeta?.size ? (
-                  <div className="pv-resource-meta-item">
-                    <span className="pv-resource-meta-label">File Size</span>
-                    <span className="pv-resource-meta-val">{formatBytes(pptMeta.size)}</span>
-                  </div>
-                ) : null}
-                <div className="pv-resource-meta-item">
-                  <span className="pv-resource-meta-label">Original File</span>
-                  <span className="pv-resource-meta-val" title={pptMeta?.originalFilename || `${presTitle}.pptx`}>
-                    {pptMeta?.originalFilename || `${presTitle}.pptx`}
-                  </span>
-                </div>
-                <div className="pv-resource-meta-item">
-                  <span className="pv-resource-meta-label">Visual Quality</span>
-                  <span className="pv-resource-meta-val pv-meta-highlight">100% Exact Original</span>
-                </div>
-              </div>
-
-              {fileUrl && (
-                <div className="pv-resource-actions">
-                  <a
-                    href={fileUrl}
-                    download={pptMeta?.originalFilename || `${presTitle}.pptx`}
-                    className="pv-btn pv-btn-primary pv-btn-lg"
-                  >
-                    <Download size={18} />
-                    <span>Download Presentation (.pptx)</span>
-                  </a>
-                </div>
-              )}
-
-              <p className="pv-resource-hint">
-                Opens directly in Microsoft PowerPoint, Google Slides, Apple Keynote, and WPS Office.
-              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setPollCount(0);
+                  loadPresentation();
+                }}
+                className="pv-btn pv-btn-primary"
+              >
+                <RotateCcw size={16} />
+                <span>Reload Slides</span>
+              </button>
             </div>
           )}
         </div>

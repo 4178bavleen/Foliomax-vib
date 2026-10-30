@@ -231,8 +231,8 @@ exports.uploadPpt = async (req, res) => {
 
     await learnFeedCache.invalidate().catch(() => {});
 
-    // Automatically trigger PPT to PDF conversion for perfect fidelity
-    triggerPptToPdfConversion(fileRec.storagePath).catch(() => {});
+    // Automatically trigger and await PPT to PDF conversion via LibreOffice
+    await triggerPptToPdfConversion(fileRec.storagePath).catch(() => {});
 
     return res.status(201).json({
       ok: true,
