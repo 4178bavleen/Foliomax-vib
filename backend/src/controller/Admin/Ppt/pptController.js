@@ -86,7 +86,11 @@ function safeFileName(original) {
 }
 
 function toPublicUrl(req, storagePath) {
-  const base = `${req.protocol}://${req.get('host')}`;
+  const host = req.get('host') || '';
+  const proto =
+    req.headers['x-forwarded-proto'] ||
+    (req.secure ? 'https' : (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https'));
+  const base = `${proto}://${host}`;
   return `${base}/${storagePath.replace(/^\/+/, '')}`;
 }
 

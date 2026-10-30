@@ -23,6 +23,18 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function ensureHttps(url) {
+  if (!url) return '';
+  if (
+    typeof window !== 'undefined' &&
+    window.location.protocol === 'https:' &&
+    url.startsWith('http://')
+  ) {
+    return url.replace(/^http:\/\//i, 'https://');
+  }
+  return url;
+}
+
 export default function PresentationViewer() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -79,20 +91,21 @@ export default function PresentationViewer() {
 
       setPptMeta(data);
 
-      const resolvedPptUrl = data.url.startsWith('http')
+      const rawPptUrl = data.url.startsWith('http')
         ? data.url
         : `${API_BASE}/${data.url.replace(/^\/+/, '')}`;
+      const resolvedPptUrl = ensureHttps(rawPptUrl);
       setFileUrl(resolvedPptUrl);
 
       // Resolve the direct PDF presentation URL
       if (data.pdfUrl) {
-        const resolvedPdf = data.pdfUrl.startsWith('http')
+        const rawPdf = data.pdfUrl.startsWith('http')
           ? data.pdfUrl
           : `${API_BASE}/${data.pdfUrl.replace(/^\/+/, '')}`;
-        setPdfUrl(resolvedPdf);
+        setPdfUrl(ensureHttps(rawPdf));
       } else {
         const directPdf = resolvedPptUrl.replace(/\.(pptx?|ppsx?|odp)$/i, '.pdf');
-        setPdfUrl(directPdf);
+        setPdfUrl(ensureHttps(directPdf));
       }
 
       setLoading(false);
