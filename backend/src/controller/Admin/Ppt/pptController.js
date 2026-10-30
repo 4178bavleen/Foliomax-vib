@@ -5,6 +5,16 @@ const fs = require('fs/promises');
 const fsSync = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+
+function getPptModel() {
+  const model = prisma.pptfile || prisma.pptFile || prisma.PptFile;
+  if (!model) {
+    throw new Error(
+      "Prisma model 'pptfile' is not generated. Run 'npx prisma generate' on the server and restart PM2."
+    );
+  }
+  return model;
+}
 const multer = require('multer');
 const crypto = require('crypto');
 const { execFile } = require('child_process');
@@ -152,7 +162,7 @@ exports.uploadPpt = async (req, res) => {
 
     const displayName = req.body.title?.trim() || originalname;
 
-    const fileRec = await prisma.pptfile.create({
+    const fileRec = await getPptModel().create({
       data: {
         name: displayName,
         originalFilename: originalname,
@@ -203,7 +213,7 @@ exports.listPpts = async (req, res) => {
       }
     }
 
-    const rows = await prisma.pptfile.findMany({
+    const rows = await getPptModel().findMany({
       where,
       orderBy: { id: 'desc' },
     });
@@ -220,7 +230,7 @@ exports.listPpts = async (req, res) => {
     return res.json(data);
   } catch (err) {
     console.error('listPpts error:', err);
-    return res.status(500).json({ ok: false, message: 'Failed to list presentations' });
+    return res.status(500).json({ ok: false, message: err.message || 'Failed to list presentations' });
   }
 };
 
@@ -232,7 +242,7 @@ exports.getPpt = async (req, res) => {
     const id = Number(req.params.id);
     if (Number.isNaN(id)) return res.status(400).json({ ok: false, message: 'Invalid id' });
 
-    const rec = await prisma.pptfile.findUnique({
+    const rec = await getPptModel().findUnique({
       where: { id },
     });
 
@@ -253,7 +263,7 @@ exports.getPpt = async (req, res) => {
     });
   } catch (err) {
     console.error('getPpt error:', err);
-    return res.status(500).json({ ok: false, message: 'Failed to fetch presentation' });
+    return res.status(500).json({ ok: false, message: err.message || 'Failed to fetch presentation' });
   }
 };
 
@@ -265,7 +275,7 @@ exports.deletePpt = async (req, res) => {
     const id = Number(req.params.id);
     if (Number.isNaN(id)) return res.status(400).json({ ok: false, message: 'Invalid id' });
 
-    const file = await prisma.pptfile.findUnique({
+    const file = await getPptModel().findUnique({
       where: { id },
     });
 
@@ -281,7 +291,7 @@ exports.deletePpt = async (req, res) => {
       } catch (_) {}
     }
 
-    await prisma.pptfile.update({
+    await getPptModel().update({
       where: { id },
       data: { isDeleted: true, isActive: false },
     });
@@ -291,7 +301,7 @@ exports.deletePpt = async (req, res) => {
     return res.json({ ok: true, message: 'Presentation deleted successfully' });
   } catch (err) {
     console.error('deletePpt error:', err);
-    return res.status(500).json({ ok: false, message: 'Failed to delete presentation' });
+    return res.status(500).json({ ok: false, message: err.message || 'Failed to delete presentation' });
   }
 };
 
@@ -300,12 +310,12 @@ exports.deletePpt = async (req, res) => {
  */
 exports.getCount = async (req, res) => {
   try {
-    const count = await prisma.pptfile.count({
+    const count = await getPptModel().count({
       where: { isDeleted: false },
     });
     return res.json({ ok: true, count });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: 'Failed to count presentations' });
+    return res.status(500).json({ ok: false, message: err.message || 'Failed to count presentations' });
   }
 };
 
@@ -319,7 +329,7 @@ exports.getProtectedPpt = async (req, res) => {
     const userId = req.user.id;
     const pptId = Number(req.params.id);
 
-    const ppt = await prisma.pptfile.findUnique({
+    const ppt = await getPptModel().findUnique({
       where: { id: pptId },
     });
 

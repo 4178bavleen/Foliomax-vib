@@ -11,7 +11,8 @@
     "prisma:migrate": "npx prisma migrate dev --name init",
     "seed": "node prisma/seed.js",
     "worker": "node src/workers/excelParserWorker.js",
-    "wordworker": "node src/workers/wordPdfWorker.js"
+    "wordworker": "node src/workers/wordPdfWorker.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",

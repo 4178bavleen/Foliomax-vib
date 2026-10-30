@@ -243,32 +243,40 @@ async function sourceQuizzes() {
 }
 
 async function sourcePpts() {
-  const rows = await prisma.pptfile.findMany({
-    where: {
-      isDeleted: false,
-      isActive: true,
-      pageName: 'learn-with-us',
-    },
-    orderBy: { createdAt: 'desc' },
-    take: MAX_PER_SOURCE,
-  });
+  try {
+    const pptModel = prisma.pptfile || prisma.pptFile || prisma.PptFile;
+    if (!pptModel) return [];
 
-  return rows.map((p) => {
-    const src = p.storagePath ? `/${serverPath(p.storagePath)}` : null;
-    return makeItem({
-      type: 'PRESENTATION',
-      id: p.id,
-      title: p.name || humanizeFileName(p.originalFilename) || 'Presentation Deck',
-      excerpt: 'Curated presentation slide deck for in-depth learning.',
-      thumbnail: null,
-      category: { id: null, name: 'Presentation', slug: 'presentation' },
-      authorName: null,
-      meta: { size: p.sizeBytes ? Number(p.sizeBytes) : null },
-      href: `/presentation/${p.id}`,
-      external: false,
-      publishedAt: toIso(p.createdAt),
+    const rows = await pptModel.findMany({
+      where: {
+        isDeleted: false,
+        isActive: true,
+        pageName: 'learn-with-us',
+      },
+      orderBy: { createdAt: 'desc' },
+      take: MAX_PER_SOURCE,
     });
-  });
+
+    return rows.map((p) => {
+      const src = p.storagePath ? `/${serverPath(p.storagePath)}` : null;
+      return makeItem({
+        type: 'PRESENTATION',
+        id: p.id,
+        title: p.name || humanizeFileName(p.originalFilename) || 'Presentation Deck',
+        excerpt: 'Curated presentation slide deck for in-depth learning.',
+        thumbnail: null,
+        category: { id: null, name: 'Presentation', slug: 'presentation' },
+        authorName: null,
+        meta: { size: p.sizeBytes ? Number(p.sizeBytes) : null },
+        href: `/presentation/${p.id}`,
+        external: false,
+        publishedAt: toIso(p.createdAt),
+      });
+    });
+  } catch (err) {
+    console.warn('[learnFeed] sourcePpts warning:', err && err.message);
+    return [];
+  }
 }
 
 // ---------------------------------------------------------------------------
