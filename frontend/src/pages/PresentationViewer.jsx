@@ -190,7 +190,7 @@ export default function PresentationViewer() {
     );
   }
 
-  if (error || !fileUrl) {
+  if (error || !pptMeta) {
     return (
       <div className="pv-page-container">
         <div className="pv-state-card">
