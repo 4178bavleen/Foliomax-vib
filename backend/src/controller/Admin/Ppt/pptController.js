@@ -26,29 +26,70 @@ function getPdfStoragePath(storagePath) {
   return storagePath.slice(0, -ext.length) + '.pdf';
 }
 
-function resolvePdfUrl(req, storagePath) {
+async function resolvePdfUrl(req, storagePath) {
   if (!storagePath) return null;
   const pdfRel = getPdfStoragePath(storagePath);
   const pdfAbs = path.join(process.cwd(), 'public', pdfRel);
   if (fsSync.existsSync(pdfAbs)) {
     return toPublicUrl(req, pdfRel);
   }
-  // Trigger background conversion if script exists
-  triggerPptToPdfConversion(storagePath).catch(() => {});
+  // Try on-demand conversion immediately so the request returns the ready PDF
+  try {
+    await triggerPptToPdfConversion(storagePath);
+    if (fsSync.existsSync(pdfAbs)) {
+      return toPublicUrl(req, pdfRel);
+    }
+  } catch (err) {
+    console.warn('[pptController] On-demand conversion notice:', err && err.message);
+  }
   return null;
 }
 
 function convertWithSoffice(inputAbs, outDir) {
-  const soffice = process.env.LIBREOFFICE_BIN || 'soffice';
-  const args = ['--headless', '--convert-to', 'pdf', '--outdir', outDir, inputAbs];
-  return new Promise((resolve, reject) => {
-    execFile(soffice, args, { timeout: 180000 }, (err, stdout, stderr) => {
-      if (err) {
-        const msg = (stderr || stdout || err.message || 'soffice failed').toString();
-        return reject(new Error(msg));
+  const binaries = [
+    process.env.LIBREOFFICE_BIN,
+    'libreoffice',
+    'soffice',
+    '/usr/bin/libreoffice',
+    '/usr/bin/soffice',
+    '/snap/bin/libreoffice',
+  ].filter(Boolean);
+
+  const args = [
+    '--headless',
+    '--invisible',
+    '--nodefault',
+    '--nofirststartwizard',
+    '--nolockcheck',
+    '--nologo',
+    '--norestore',
+    '-env:UserInstallation=file:///tmp/libreoffice_profile',
+    '--convert-to',
+    'pdf',
+    '--outdir',
+    outDir,
+    inputAbs,
+  ];
+
+  return new Promise(async (resolve, reject) => {
+    let lastError = null;
+    for (const bin of binaries) {
+      try {
+        await new Promise((res, rej) => {
+          execFile(bin, args, { timeout: 90000 }, (err, stdout, stderr) => {
+            if (err) {
+              const msg = (stderr || stdout || err.message || 'soffice failed').toString();
+              return rej(new Error(msg));
+            }
+            res();
+          });
+        });
+        return resolve();
+      } catch (e) {
+        lastError = e;
       }
-      resolve();
-    });
+    }
+    reject(lastError || new Error('No LibreOffice binary found'));
   });
 }
 
@@ -240,7 +281,7 @@ exports.uploadPpt = async (req, res) => {
         id: fileRec.id,
         name: fileRec.name,
         url: toPublicUrl(req, fileRec.storagePath),
-        pdfUrl: resolvePdfUrl(req, fileRec.storagePath),
+        pdfUrl: await resolvePdfUrl(req, fileRec.storagePath),
         size: Number(fileRec.sizeBytes),
         uploadedAt: fileRec.createdAt,
         pageName: fileRec.pageName ?? null,
@@ -311,7 +352,7 @@ exports.getPpt = async (req, res) => {
       name: rec.name,
       originalFilename: rec.originalFilename,
       url: rec.storagePath ? toPublicUrl(req, rec.storagePath) : '',
-      pdfUrl: rec.storagePath ? resolvePdfUrl(req, rec.storagePath) : null,
+      pdfUrl: rec.storagePath ? await resolvePdfUrl(req, rec.storagePath) : null,
       size: rec.sizeBytes ? Number(rec.sizeBytes) : undefined,
       uploadedAt: rec.createdAt,
       pageName: rec.pageName,
@@ -424,10 +465,47 @@ exports.getProtectedPpt = async (req, res) => {
       size: ppt.sizeBytes ? Number(ppt.sizeBytes) : undefined,
       uploadedAt: ppt.createdAt,
       url: ppt.storagePath ? toPublicUrl(req, ppt.storagePath) : "",
-      pdfUrl: ppt.storagePath ? resolvePdfUrl(req, ppt.storagePath) : null,
+      pdfUrl: ppt.storagePath ? await resolvePdfUrl(req, ppt.storagePath) : null,
     });
   } catch (err) {
     console.error("getProtectedPpt error", err);
     return res.status(500).json({ ok: false, message: "Server error" });
   }
+};
+
+/**
+ * GET /foliomax/public/ppt/diagnostics/system
+ * Diagnostic endpoint to inspect LibreOffice converter status on host
+ */
+exports.checkHealth = async (req, res) => {
+  const results = {};
+  const binaries = [
+    process.env.LIBREOFFICE_BIN,
+    'libreoffice',
+    'soffice',
+    '/usr/bin/libreoffice',
+    '/usr/bin/soffice',
+    '/snap/bin/libreoffice',
+  ].filter(Boolean);
+
+  for (const bin of binaries) {
+    try {
+      const ver = await new Promise((resolve, reject) => {
+        execFile(bin, ['--version'], { timeout: 8000 }, (err, stdout, stderr) => {
+          if (err) return reject(new Error(stderr || stdout || err.message));
+          resolve((stdout || stderr || '').trim());
+        });
+      });
+      results[bin] = { status: 'available', version: ver };
+    } catch (e) {
+      results[bin] = { status: 'not available', error: e.message };
+    }
+  }
+
+  return res.json({
+    ok: true,
+    platform: process.platform,
+    cwd: process.cwd(),
+    binaries: results,
+  });
 };

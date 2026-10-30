@@ -10,8 +10,12 @@ const {
   deletePpt,
   getCount,
   getProtectedPpt,
+  checkHealth,
 } = require('../../../controller/Admin/Ppt/pptController');
 const { authMiddleware, adminOnly } = require('../../../middlewares/authMiddleware');
+
+// Diagnostics & health check
+router.get('/diagnostics/system', checkHealth);
 
 // Read endpoints (accessible publicly or by admin)
 router.get('/public', listPpts);
