@@ -9,6 +9,7 @@ const TYPE_META = {
   INSIGHT: { label: "Insight", cta: "Read Insight", icon: "📰" },
   VIDEO: { label: "Video", cta: "Watch Now", icon: "🎬" },
   QUIZ: { label: "Quiz", cta: "Start Quiz", icon: "🧠" },
+  PRESENTATION: { label: "Presentation", cta: "View Presentation", icon: "📊" },
 };
 
 function resolveMedia(src) {
@@ -81,7 +82,9 @@ function FeedCard({ item, index = 0 }) {
         ? `${item.meta?.questionCount || 0} question${
             (item.meta?.questionCount || 0) === 1 ? "" : "s"
           }`
-        : null;
+        : item.type === "PRESENTATION"
+          ? "PPT Deck"
+          : null;
 
   const body = (
     <>

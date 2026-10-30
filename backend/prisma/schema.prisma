@@ -710,6 +710,38 @@ model wordfile {
   @@map("WordFile")
 }
 
+model pptfile {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  originalFilename String?
+
+  mimeType String?
+
+  sizeBytes BigInt?
+
+  storagePath String?
+
+  checksum String? @unique(map: "PptFile_checksum_key")
+
+  isActive Boolean @default(true)
+
+  isDeleted Boolean @default(false)
+
+  pageName String? @db.VarChar(100)
+
+  version String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, isDeleted], map: "PptFile_isActive_isDeleted_idx")
+  @@index([name], map: "PptFile_name_idx")
+  @@map("PptFile")
+}
+
 enum company_status {
   ACTIVE
 

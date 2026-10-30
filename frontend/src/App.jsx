@@ -37,6 +37,7 @@ import ETFMutualFund from './pages/ETF&MutualFund'
 import DetailedBlog from './pages/DetailedBlog'
 import ExcelViewer from './pages/ExcelViewer';
 import CoursePlayer from './pages/CoursePlayer';
+import PresentationViewer from './pages/PresentationViewer';
 import Transaction from './pages/customer/Transactions/Transactions';
 
 function App() {
@@ -54,7 +55,6 @@ function App() {
           <Route path="/retirement-calculator" element={<RetirementCalculator/>} />
           <Route path="/know-your-company" element={<KnowYourCom />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
-          
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/blogs" element={<Blog />} />
@@ -69,6 +69,8 @@ function App() {
           <Route path="/learn-with-us" element={<LearnWithUs />} />
           <Route path="/excel/:id" element={<ExcelViewer />} />
           <Route path="/course/:id" element={<CoursePlayer />} />
+          <Route path="/presentation/:id" element={<PresentationViewer />} />
+          <Route path="/ppt/:id" element={<PresentationViewer />} />
         </Route>
 
         {/*  Auth pages WITHOUT MainLayout */}

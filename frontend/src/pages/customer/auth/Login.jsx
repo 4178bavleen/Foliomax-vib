@@ -34,8 +34,9 @@ const Login = () => {
       const payload = JSON.parse(atob(token.split(".")[1]));
 
       if (payload.exp * 1000 > Date.now()) {
-        const redirectTo =
-          localStorage.getItem("redirectAfterLogin") || "/customer";
+        let redirectTo =
+          localStorage.getItem("redirectAfterLogin") || "/";
+        if (redirectTo === "/customer") redirectTo = "/";
 
         localStorage.removeItem("redirectAfterLogin");
         navigate(redirectTo, { replace: true });
@@ -90,8 +91,9 @@ const Login = () => {
       storage.setItem("foliomax_accessToken", data.accessToken);
       storage.setItem("foliomax_refreshToken", data.refreshToken);
 
-      const redirectTo =
-        localStorage.getItem("redirectAfterLogin") || "/customer";
+      let redirectTo =
+        localStorage.getItem("redirectAfterLogin") || "/";
+      if (redirectTo === "/customer") redirectTo = "/";
 
       localStorage.removeItem("redirectAfterLogin");
 
@@ -227,8 +229,9 @@ const Login = () => {
       storage.setItem("foliomax_accessToken", data.accessToken);
       storage.setItem("foliomax_refreshToken", data.refreshToken);
 
-      const redirectTo =
-        localStorage.getItem("redirectAfterLogin") || "/customer";
+      let redirectTo =
+        localStorage.getItem("redirectAfterLogin") || "/";
+      if (redirectTo === "/customer") redirectTo = "/";
 
       localStorage.removeItem("redirectAfterLogin");
 

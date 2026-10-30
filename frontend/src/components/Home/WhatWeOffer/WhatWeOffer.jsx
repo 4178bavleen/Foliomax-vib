@@ -105,7 +105,7 @@ export default function WhatWeOffer() {
             <div className="col-lg-4 col-md-12 col-sm-12 right-column">
               <div className="right-content">
                 <div className="text-box">
-                  <h5>Payout Details 2023</h5>
+                  <h5>Payout Details 2026</h5>
                   <p>Blame belongs those who fail foresee.</p>
                 </div>
                 <figure className="image-box">

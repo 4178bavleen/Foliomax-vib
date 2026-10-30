@@ -9,6 +9,7 @@ function Subscriptions() {
   const [pdfs, setPdfs] = useState([]);
   const [excels, setExcels] = useState([]); // ✅ ADDED
   const [courses, setCourses] = useState([]);
+  const [ppts, setPpts] = useState([]);
 
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -24,6 +25,7 @@ function Subscriptions() {
     fetchSubscriptions();
     fetchExcels(); // ✅ ADDED
     fetchCourses();
+    fetchPpts();
     fetchSubscriptionStatus();
     fetchPlans();
   }, []);
@@ -133,6 +135,66 @@ function Subscriptions() {
    =============================== */
   const handleViewCourse = (course) => {
     navigate(`/course/${course.id}`);
+  };
+
+  /* ===============================
+     FETCH PPTs
+  =============================== */
+  const fetchPpts = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/foliomax/public/ppt?pageName=subscription`);
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : data?.data || [];
+      setPpts(list);
+    } catch {
+      toast.error("Failed to load presentations");
+    }
+  };
+
+  /* ===============================
+     VIEW PPT
+  =============================== */
+  const handleViewPpt = async (ppt) => {
+    const token = sessionStorage.getItem("foliomax_accessToken");
+
+    if (!token) {
+      toast.error("Please login first");
+      localStorage.setItem("redirectAfterLogin", "/subscription");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/foliomax/public/ppt/protected/${ppt.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        toast.error(data.message || "Subscription required");
+        return;
+      }
+
+      if (!data.url) {
+        toast.error("Presentation URL not available");
+        return;
+      }
+
+      // ✅ Open presentation directly on the website (no downloading)
+      navigate(`/presentation/${ppt.id}`);
+    } catch {
+      if (ppt.id) {
+        navigate(`/presentation/${ppt.id}`);
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
   };
 
   /* ===============================
@@ -530,6 +592,67 @@ function Subscriptions() {
                       </button>
                     </div>
 
+                  </div>
+                </div>
+              </div>
+            ))}
+
+          {/* ================= PPT / PRESENTATION ================= */}
+          {!loading &&
+            ppts.map((ppt) => (
+              <div key={ppt.id} className="col-lg-4 col-md-6 col-sm-12 service-block">
+                <div className="service-block-one">
+                  <div className="inner-box fm-card">
+                    <h6>
+                      <span
+                        style={{
+                          background: "#d4380d",
+                          color: "#fff",
+                          padding: "3px 8px",
+                          borderRadius: "4px",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        PPT
+                      </span>
+
+                      <span className="fm-badge">Premium</span>
+                    </h6>
+
+                    <h3>{ppt.name}</h3>
+
+                    <p className="fm-subtext">
+                      Premium presentation slides for deep insights.
+                    </p>
+
+                    <p style={{ color: "#555", fontSize: "14px" }}>
+                      Unlock this curated presentation deck and boost your market understanding.
+                    </p>
+
+                    <ul className="fm-points">
+                      <li>✔ Professional slide deck</li>
+                      <li>✔ Structured market analysis</li>
+                      <li>✔ Instant download after unlock</li>
+                    </ul>
+
+                    <div className="btn-box mt-3">
+                      {isSubscribed ? (
+                        <button
+                          className="premium-btn"
+                          onClick={() => handleViewPpt(ppt)}
+                        >
+                          View Presentation
+                        </button>
+                      ) : (
+                        <button
+                          className="premium-btn cta"
+                          onClick={handleSubscribeClick}
+                        >
+                          🔒 Unlock Now
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

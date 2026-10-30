@@ -32,15 +32,16 @@ const API = {
 
 // Page options - keep these in sync with your backend allowed slugs
 const PAGE_OPTIONS = [
+  { value: "learn-with-us", label: "Learn With Us" },
   { value: "know-your-company", label: "Know Your Company" },
-  { value: "knowdledge", label: "Knowdledge" },
-  { value: "calculators", label: "Calculators" },
 ];
 
-const PAGE_LABEL_MAP = PAGE_OPTIONS.reduce<Record<string, string>>((acc, p) => {
-  acc[p.value] = p.label;
-  return acc;
-}, {});
+const PAGE_LABEL_MAP: Record<string, string> = {
+  "learn-with-us": "Learn With Us",
+  "know-your-company": "Know Your Company",
+  "knowdledge": "Knowledge",
+  "calculators": "Calculators",
+};
 
 // ========= Edit Quiz Modal (same form fields as Add) =========
 type EditQuizModalProps = {

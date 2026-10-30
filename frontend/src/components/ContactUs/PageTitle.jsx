@@ -127,7 +127,7 @@ function PageTitle() {
                       <li>
                         <a href="tel:+918899228718">
                           <i className="flaticon-phone-call" />
-                          +91 88992 28718
+                          +91 8899228718
                         </a>
                       </li>
 

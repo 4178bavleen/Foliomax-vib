@@ -24,10 +24,14 @@ export default function SignInForm() {
     // navigate happens inside login()
   } catch (err: unknown) {
     let msg = "Login failed. Please try again.";
-    if (err instanceof Error) msg = err.message;
-    else if (typeof err === "object" && err && "response" in err) {
-      const axiosErr = err as { response?: { data?: { message?: string } } };
-      msg = axiosErr.response?.data?.message ?? msg;
+    if (typeof err === "object" && err && "response" in err) {
+      const axiosErr = err as { response?: { data?: { message?: string; error?: string } } };
+      msg =
+        axiosErr.response?.data?.error ??
+        axiosErr.response?.data?.message ??
+        (err instanceof Error ? err.message : msg);
+    } else if (err instanceof Error) {
+      msg = err.message;
     }
     setError(msg);
   } finally {

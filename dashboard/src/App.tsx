@@ -40,6 +40,7 @@ import AddInsightCategory from "./pages/ETF&Mutual/AddInsightCategory.jsx";
 import AddInsight from "./pages/ETF&Mutual/AddInsights.jsx";
 import AllInsights from "./pages/ETF&Mutual/AllInsights.jsx";
 import PdfUploadPage from "./pages/PdfUpload/PdfUpload.js";
+import PptUploadPage from "./pages/PptUpload/PptUpload";
 import Subscriptions from "./pages/Subscription/Subscriptions.jsx";
 import PdfUploadSubscriptionPage from "./pages/Subscription/PdfUploadSubscriptionPage.jsx";
 import CourseUpload from "./pages/Subscription/CourseUpload.jsx";
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="/excel-upload" element={<ExcelUploadPage/>} />
             <Route path="/video-upload" element={<VideoUploadPage/>} />
             <Route path="/pdf-upload" element={<PdfUploadPage/>}/>
+            <Route path="/ppt-upload" element={<PptUploadPage />} />
            {/* Quiz Routes */}
             <Route path="/add-company" element={<AddCompany/>}/>
             <Route path="/add-quiz" element={<AddQuiz/>}/>
@@ -84,6 +86,7 @@ export default function App() {
 
             <Route path="/subscriptions" element={<Subscriptions/>}/>
             <Route path="/subs-pdf-upload" element={<PdfUploadSubscriptionPage/>}/>
+            <Route path="/subs-ppt-upload" element={<PptUploadPage defaultPage="subscription" fixedPage={true} />} />
             <Route path="/course-upload" element={<CourseUpload/>}/>
             <Route path="/site-content" element={<SiteContent/>}/>
             <Route path="/customer-message" element={<CustomerMessage/>}/>

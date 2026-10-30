@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ImBlogger } from "react-icons/im";
-import { FaFilePdf } from "react-icons/fa";
+import { FaFilePdf, FaFilePowerpoint } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { FaFileExcel } from "react-icons/fa6";
 import { FaMoneyBill } from "react-icons/fa6";
@@ -73,6 +73,11 @@ const navItems: NavItem[] = [
     path: "/pdf-upload",
   },
   {
+    icon: <FaFilePowerpoint />,
+    name: "PPT Upload",
+    path: "/ppt-upload",
+  },
+  {
     icon: <MdQuiz/>,
     name: "Quiz",
     subItems: [{ name: "Add Company", path: "/add-company", pro: false },
@@ -86,6 +91,7 @@ const navItems: NavItem[] = [
     subItems: [
       {name:"Subscription Plans",path:"/subscriptions"},
       {name:"PDF Upload", path:"/subs-pdf-upload"},
+      {name:"PPT Upload", path: "/subs-ppt-upload"},
       {name:"Excel Upload", path:"/excel-upload"},
       {name:"Course Upload", path:"/course-upload"}
     ],

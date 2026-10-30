@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useSearchParams } from "react-router-dom";
 
 /**
  * Use same idea as Foliopool.jsx
@@ -244,6 +245,10 @@ const formatTime = (totalSeconds) => {
 };
 
 export default function Quiz() {
+  const [searchParams] = useSearchParams();
+  const urlCompanyId = searchParams.get("companyId");
+  const urlQuizId = searchParams.get("quizId") || searchParams.get("id");
+
   // companies
   const [companies, setCompanies] = useState([]);
   const [loadingCompanies, setLoadingCompanies] = useState(false);
@@ -253,7 +258,9 @@ export default function Quiz() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const queryTimer = useRef(null);
 
-  const [activeCompanyId, setActiveCompanyId] = useState(null);
+  const [activeCompanyId, setActiveCompanyId] = useState(
+    urlCompanyId ? Number(urlCompanyId) || urlCompanyId : null
+  );
   const [activeCompanyName, setActiveCompanyName] = useState("");
 
   // quizzes for selected company
@@ -290,7 +297,17 @@ export default function Quiz() {
         }
         const data = await res.json();
         if (!mounted) return;
-        setCompanies(Array.isArray(data) ? data : []);
+        const list = Array.isArray(data) ? data : [];
+        setCompanies(list);
+
+        const targetId = urlCompanyId || (activeCompanyId ? String(activeCompanyId) : null);
+        if (targetId) {
+          const found = list.find((c) => String(c.id) === String(targetId));
+          if (found) {
+            setActiveCompanyId(found.id);
+            setActiveCompanyName(found.name);
+          }
+        }
       } catch (err) {
         if (err?.name === "AbortError") return;
         setCompaniesError(err?.message || "Could not load companies");
@@ -304,6 +321,16 @@ export default function Quiz() {
       ac.abort();
     };
   }, []);
+
+  // Sync with URL params if they change
+  useEffect(() => {
+    if (urlCompanyId && String(urlCompanyId) !== String(activeCompanyId)) {
+      const parsed = Number(urlCompanyId) || urlCompanyId;
+      setActiveCompanyId(parsed);
+      const c = companies.find((x) => String(x.id) === String(urlCompanyId));
+      if (c) setActiveCompanyName(c.name);
+    }
+  }, [urlCompanyId, companies]);
 
   // ---------- debounced search ----------
   useEffect(() => {
@@ -379,11 +406,24 @@ export default function Quiz() {
           correctIndex: typeof q.correctIndex === "number" ? q.correctIndex : 0,
           note: q.note || "",
         }));
-        const shuffled = normalized.sort(() => Math.random() - 0.5);
+
+        let ordered = normalized;
+        if (urlQuizId) {
+          const matchIdx = normalized.findIndex((q) => String(q.id) === String(urlQuizId));
+          if (matchIdx !== -1) {
+            const matchItem = normalized[matchIdx];
+            const others = normalized.filter((_, idx) => idx !== matchIdx).sort(() => Math.random() - 0.5);
+            ordered = [matchItem, ...others];
+          } else {
+            ordered = normalized.sort(() => Math.random() - 0.5);
+          }
+        } else {
+          ordered = normalized.sort(() => Math.random() - 0.5);
+        }
 
         if (!mounted) return;
-        setQuizzes(shuffled);
-        setUserAnswers(Array(shuffled.length).fill(null));
+        setQuizzes(ordered);
+        setUserAnswers(Array(ordered.length).fill(null));
       } catch (err) {
         if (err?.name === "AbortError") return;
         setQuizError(err?.message || "Could not load quiz");

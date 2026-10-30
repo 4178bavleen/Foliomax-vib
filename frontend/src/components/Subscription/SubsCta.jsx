@@ -18,7 +18,7 @@ function SubsCta() {
         </li>
         {/* <li>
           <span>Call us!</span>
-          <h5><a href="tel:1800766123456">+91 88992 28718</a></h5>
+          <h5><a href="tel:1800766123456">+91 8899228718 </a></h5>
         </li> */}
       </ul>
       <a href="/contact-us" className="theme-btn btn-two"><span>Contact Us</span></a>

@@ -15,9 +15,8 @@ const API = {
 };
 
 const PAGE_OPTIONS = [
+  { value: "learn-with-us", label: "Learn With Us" },
   { value: "know-your-company", label: "Know Your Company" },
-  { value: "knowdledge", label: "Knowdledge" },
-  { value: "calculators", label: "Calculators" },
 ];
 
 const AddQuiz: React.FC = () => {
@@ -26,7 +25,7 @@ const AddQuiz: React.FC = () => {
   const [companyError, setCompanyError] = useState<string | null>(null);
 
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
-  const [pageName, setPageName] = useState<string>(""); // new page selector
+  const [pageName, setPageName] = useState<string>("learn-with-us"); // default to Learn With Us
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState<string[]>(["", "", "", ""]);
   const [correctIndex, setCorrectIndex] = useState<string>(""); // "0" | "1" | "2" | "3"
@@ -145,7 +144,7 @@ const AddQuiz: React.FC = () => {
 
     // reset
     setSelectedCompanyId("");
-    setPageName("");
+    setPageName("learn-with-us");
     setQuestion("");
     setOptions(["", "", "", ""]);
     setCorrectIndex("");

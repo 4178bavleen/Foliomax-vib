@@ -16,10 +16,10 @@ const learnFeedCache = require('../../../lib/learnFeedCache');
 // GET /foliomax/learn/feed?type=all|BLOG|INSIGHT|VIDEO|QUIZ&limit=12&cursor=...
 // ---------------------------------------------------------------------------
 
-const CONTENT_TYPES = ['BLOG', 'INSIGHT', 'VIDEO', 'QUIZ'];
+const CONTENT_TYPES = ['BLOG', 'INSIGHT', 'VIDEO', 'QUIZ', 'PRESENTATION'];
 
 // Tie-break rank, so equal timestamps produce a stable order across pages.
-const TYPE_RANK = { BLOG: 0, INSIGHT: 1, VIDEO: 2, QUIZ: 3 };
+const TYPE_RANK = { BLOG: 0, INSIGHT: 1, VIDEO: 2, QUIZ: 3, PRESENTATION: 4 };
 
 // How deep to read from each source before merging.
 const MAX_PER_SOURCE = 60;
@@ -213,6 +213,11 @@ async function sourceQuizzes() {
     const existing = byCompany.get(key);
 
     if (!existing) {
+      const companyId = q.company?.id;
+      const targetHref = companyId
+        ? `/quiz?companyId=${companyId}&quizId=${q.id}`
+        : `/quiz?quizId=${q.id}`;
+
       byCompany.set(key, {
         type: 'QUIZ',
         typeRank: TYPE_RANK.QUIZ,
@@ -223,7 +228,7 @@ async function sourceQuizzes() {
         category: { id: q.company?.id ?? null, name: q.company?.name ?? null, slug: null },
         authorName: null,
         meta: { questionCount: 1 },
-        href: '/quiz',
+        href: targetHref,
         external: false,
         publishedAt: toIso(q.createdAt),
         publishedAtMs: new Date(q.createdAt).getTime(),
@@ -235,6 +240,35 @@ async function sourceQuizzes() {
   }
 
   return [...byCompany.values()];
+}
+
+async function sourcePpts() {
+  const rows = await prisma.pptfile.findMany({
+    where: {
+      isDeleted: false,
+      isActive: true,
+      pageName: 'learn-with-us',
+    },
+    orderBy: { createdAt: 'desc' },
+    take: MAX_PER_SOURCE,
+  });
+
+  return rows.map((p) => {
+    const src = p.storagePath ? `/${serverPath(p.storagePath)}` : null;
+    return makeItem({
+      type: 'PRESENTATION',
+      id: p.id,
+      title: p.name || humanizeFileName(p.originalFilename) || 'Presentation Deck',
+      excerpt: 'Curated presentation slide deck for in-depth learning.',
+      thumbnail: null,
+      category: { id: null, name: 'Presentation', slug: 'presentation' },
+      authorName: null,
+      meta: { size: p.sizeBytes ? Number(p.sizeBytes) : null },
+      href: `/presentation/${p.id}`,
+      external: false,
+      publishedAt: toIso(p.createdAt),
+    });
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -311,6 +345,7 @@ exports.getLearnFeed = async (req, res) => {
         sourceInsights(),
         sourceVideos(),
         sourceQuizzes(),
+        sourcePpts(),
       ]);
 
       const collected = [];

@@ -29,7 +29,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const baseURL = import.meta.env.VITE_API_URL || "https://api.foliomax.in";
+  const baseURL =
+    import.meta.env.VITE_API_URL ||
+    import.meta.env.VITE_API_BASE ||
+    import.meta.env.VITE_API_BASE_URL ||
+    "http://localhost:3010";
+
+    
 
   // Restore session on refresh
   useEffect(() => {

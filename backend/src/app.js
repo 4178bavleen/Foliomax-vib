@@ -34,7 +34,9 @@ app.use(
   })
 );
 const pdfRoutes = require('./routes/Admin/Pdf/pdfRoutes');
+
 const vedioRoutes = require('./routes/Admin/Video/videoRoutes');
+const pptRoutes = require('./routes/Admin/Ppt/pptRoutes');
 app.use('/foliomax/public/pdf', pdfRoutes);
 app.use('/foliomax/public/video', vedioRoutes);
 app.use("/api/market", marketRoutes);
@@ -71,7 +73,7 @@ const fileRoutes = require("./routes/fileRoutes");
 const quizRoutes = require("./routes/Admin/Quiz/quizRoutes");
 const statsRoutes = require("./routes/Admin/Stats/StatsRoutes");
 const companyRoutes = require("./routes/Admin/Company/companyRoutes");
-// const vedioRoutes = require('./routes/Admin/Video/videoRoutes');
+
 const wordRoutes = require('./routes/Admin/Word/wordRoutes');
 const faqCategoryRoutes = require('./routes/Admin/FAQ/faqCategoryRoutes');
 const faqRoutes = require('./routes/Admin/FAQ/faqRoutes');
@@ -126,7 +128,10 @@ app.use("/foliomax/insights-categories",insightsCategoryRoutes);
 app.use("/foliomax/insights",insightsRoutes);
 app.use("/foliomax/learn", learnRoutes);
 app.use("/foliomax/admin/video", vedioRoutes);
+
 app.use('/foliomax/admin/pdf', pdfRoutes);
+app.use('/foliomax/admin/ppt', pptRoutes);
+app.use('/foliomax/public/ppt', pptRoutes);
 app.use('/foliomax/admin/',statsRoutes);
 app.use('/foliomax/files', wordRoutes);
 app.use('/foliomax/admin', faqCategoryRoutes ,faqRoutes);

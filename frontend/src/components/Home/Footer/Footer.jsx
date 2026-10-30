@@ -92,7 +92,7 @@ const Footer = () => {
                     </h5>
                     {/* <p>Prefer call us!</p>
                     <h5>
-                      <a href="tel:18007661234">+91 88992 28718</a>
+                      <a href="tel:18007661234">+91 8899228718</a>
                     </h5> */}
                     <ul className="social-links clearfix">
                       <li><a href="/"><i className="flaticon-facebook"></i></a></li>
@@ -114,7 +114,7 @@ const Footer = () => {
             <div className="bottom-inner">
               <div className="copyright">
                 <p>
-                  &copy; 2023 <a href="/">Foliomax</a> 
+                  &copy; 2026 <a href="/">Foliomax</a> 
                 </p>
               </div>
               <ul className="footer-nav">
