@@ -17,6 +17,26 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(express.json());
 
+// Allow foliomax.in and admin to frame static uploads and presentations
+app.use((req, res, next) => {
+  res.removeHeader("X-Frame-Options");
+  res.setHeader(
+    "Content-Security-Policy",
+    "frame-ancestors 'self' https://foliomax.in https://*.foliomax.in http://localhost:5173 http://localhost:5174"
+  );
+  next();
+});
+
+const staticFrameOptions = {
+  setHeaders: (res) => {
+    res.removeHeader("X-Frame-Options");
+    res.setHeader(
+      "Content-Security-Policy",
+      "frame-ancestors 'self' https://foliomax.in https://*.foliomax.in http://localhost:5173 http://localhost:5174"
+    );
+  },
+};
+
 // ---------- CORS (add before routes) ----------
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5174";
 const ADMIN_URL = process.env.ADMIN_URL;
@@ -54,19 +74,19 @@ app.get("/kafka-testing/:name", async (req, res) => {
 // app.use(cookieParser());
 // -----------------------------------------------
 
-app.use("/public", express.static(path.join(__dirname, "../public")));
+app.use("/public", express.static(path.join(__dirname, "../public"), staticFrameOptions));
 
-app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads"), staticFrameOptions));
+app.use("/uploads", express.static("uploads", staticFrameOptions));
 
 app.use(
   "/uploads",
-  express.static(path.join(process.cwd(), "public", "uploads"))
+  express.static(path.join(process.cwd(), "public", "uploads"), staticFrameOptions)
 );
 
 app.use(
   "/uploads/insights",
-  express.static(path.join(process.cwd(), "uploads/insights"))
+  express.static(path.join(process.cwd(), "uploads/insights"), staticFrameOptions)
 );
 const authRoute = require("./routes/authRoutes");
 const fileRoutes = require("./routes/fileRoutes");

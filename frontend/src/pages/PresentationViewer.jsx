@@ -91,8 +91,12 @@ export default function PresentationViewer() {
 
       setPptMeta(data);
 
-      // Resolve the direct PDF presentation URL (if available)
-      if (data.pdfUrl) {
+      // Resolve the direct PDF presentation URL (must be a valid .pdf file)
+      if (
+        data.pdfUrl &&
+        typeof data.pdfUrl === 'string' &&
+        data.pdfUrl.trim().toLowerCase().includes('.pdf')
+      ) {
         const rawPdf = data.pdfUrl.startsWith('http')
           ? data.pdfUrl
           : `${API_BASE}/${data.pdfUrl.replace(/^\/+/, '')}`;

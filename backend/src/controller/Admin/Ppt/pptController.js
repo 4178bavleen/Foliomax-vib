@@ -178,12 +178,15 @@ function safeFileName(original) {
 }
 
 function toPublicUrl(req, storagePath) {
+  if (!storagePath) return '';
+  const clean = storagePath.replace(/^\/+/, '');
+  if (!clean) return '';
   const host = req.get('host') || '';
   const proto =
     req.headers['x-forwarded-proto'] ||
     (req.secure ? 'https' : (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https'));
   const base = `${proto}://${host}`;
-  return `${base}/${storagePath.replace(/^\/+/, '')}`;
+  return `${base}/${clean}`;
 }
 
 const ALLOWED_EXTS = ['.ppt', '.pptx', '.odp', '.pps', '.ppsx'];
