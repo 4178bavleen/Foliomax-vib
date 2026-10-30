@@ -44,6 +44,8 @@ export default function PresentationViewer() {
   const [fileUrl, setFileUrl] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [pollCount, setPollCount] = useState(0);
   const [error, setError] = useState(null);
   const [accessDenied, setAccessDenied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -103,9 +105,18 @@ export default function PresentationViewer() {
           ? data.pdfUrl
           : `${API_BASE}/${data.pdfUrl.replace(/^\/+/, '')}`;
         setPdfUrl(ensureHttps(rawPdf));
+        setIsPreparing(false);
       } else {
-        const directPdf = resolvedPptUrl.replace(/\.(pptx?|ppsx?|odp)$/i, '.pdf');
-        setPdfUrl(ensureHttps(directPdf));
+        setPdfUrl('');
+        // Poll for conversion completion up to 5 times (every 3 seconds)
+        if (pollCount < 5) {
+          setIsPreparing(true);
+          setTimeout(() => {
+            setPollCount((prev) => prev + 1);
+          }, 3000);
+        } else {
+          setIsPreparing(false);
+        }
       }
 
       setLoading(false);
@@ -114,7 +125,7 @@ export default function PresentationViewer() {
       setError(err.message || 'Unable to open presentation deck.');
       setLoading(false);
     }
-  }, [id]);
+  }, [id, pollCount]);
 
   useEffect(() => {
     loadPresentation();
@@ -289,11 +300,54 @@ export default function PresentationViewer() {
       <div className="pv-viewer-card">
         {/* Presentation Canvas Stage */}
         <div className="pv-canvas-stage">
-          <iframe
-            title={presTitle}
-            className="pv-presentation-frame"
-            src={`${pdfUrl}#toolbar=1&navpanes=1&view=Fit`}
-          />
+          {pdfUrl ? (
+            <iframe
+              title={presTitle}
+              className="pv-presentation-frame"
+              src={`${pdfUrl}#toolbar=1&navpanes=1&view=Fit`}
+            />
+          ) : isPreparing ? (
+            <div className="pv-preparing-container">
+              <div className="pv-spinner-ring" />
+              <h3 className="pv-preparing-title">Preparing Presentation Deck</h3>
+              <p className="pv-preparing-desc">
+                Generating high-fidelity slide preview from original presentation. This takes just a moment...
+              </p>
+            </div>
+          ) : (
+            <div className="pv-preparing-container">
+              <div className="pv-ready-icon-wrap">
+                <Monitor size={32} />
+              </div>
+              <h3 className="pv-preparing-title">High-Fidelity Preview Processing</h3>
+              <p className="pv-preparing-desc">
+                The slide preview is currently being processed on the server. You can download and open the original presentation directly.
+              </p>
+              <div className="pv-preparing-actions">
+                {fileUrl && (
+                  <a
+                    href={fileUrl}
+                    download={pptMeta?.originalFilename || `${presTitle}.pptx`}
+                    className="pv-btn pv-btn-primary"
+                  >
+                    <Download size={16} />
+                    <span>Download Presentation (.pptx)</span>
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPollCount(0);
+                    loadPresentation();
+                  }}
+                  className="pv-btn pv-btn-secondary"
+                >
+                  <RotateCcw size={16} />
+                  <span>Check Preview Again</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

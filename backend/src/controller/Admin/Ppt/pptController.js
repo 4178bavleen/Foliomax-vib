@@ -38,32 +38,83 @@ function resolvePdfUrl(req, storagePath) {
   return null;
 }
 
-function triggerPptToPdfConversion(storagePath) {
-  return new Promise((resolve) => {
-    try {
-      const ext = path.extname(storagePath);
-      const pdfRel = storagePath.slice(0, -ext.length) + '.pdf';
-      const pptAbs = path.join(process.cwd(), 'public', storagePath);
-      const pdfAbs = path.join(process.cwd(), 'public', pdfRel);
-      const scriptPath = path.join(process.cwd(), 'scripts', 'convertPpt.ps1');
-
-      if (!fsSync.existsSync(pptAbs) || !fsSync.existsSync(scriptPath)) {
-        return resolve(null);
+function convertWithSoffice(inputAbs, outDir) {
+  const soffice = process.env.LIBREOFFICE_BIN || 'soffice';
+  const args = ['--headless', '--convert-to', 'pdf', '--outdir', outDir, inputAbs];
+  return new Promise((resolve, reject) => {
+    execFile(soffice, args, { timeout: 180000 }, (err, stdout, stderr) => {
+      if (err) {
+        const msg = (stderr || stdout || err.message || 'soffice failed').toString();
+        return reject(new Error(msg));
       }
-
-      execFile(
-        'powershell',
-        ['-ExecutionPolicy', 'Bypass', '-File', scriptPath, '-InputFile', pptAbs, '-OutputFile', pdfAbs],
-        { timeout: 180000 },
-        (err) => {
-          if (err) console.warn('[pptController] PPT conversion notice:', err.message);
-          resolve(pdfAbs);
-        }
-      );
-    } catch (_) {
-      resolve(null);
-    }
+      resolve();
+    });
   });
+}
+
+function convertWithPowerShell(inputAbs, outputAbs) {
+  const scriptPath = path.join(process.cwd(), 'scripts', 'convertPpt.ps1');
+  if (!fsSync.existsSync(scriptPath)) {
+    return Promise.reject(new Error('convertPpt.ps1 not found'));
+  }
+  return new Promise((resolve, reject) => {
+    execFile(
+      'powershell',
+      ['-ExecutionPolicy', 'Bypass', '-File', scriptPath, '-InputFile', inputAbs, '-OutputFile', outputAbs],
+      { timeout: 180000 },
+      (err, stdout, stderr) => {
+        if (err) {
+          const msg = (stderr || stdout || err.message || 'powershell conversion failed').toString();
+          return reject(new Error(msg));
+        }
+        resolve();
+      }
+    );
+  });
+}
+
+async function triggerPptToPdfConversion(storagePath) {
+  try {
+    const ext = path.extname(storagePath);
+    const pdfRel = storagePath.slice(0, -ext.length) + '.pdf';
+    const pptAbs = path.join(process.cwd(), 'public', storagePath);
+    const pdfAbs = path.join(process.cwd(), 'public', pdfRel);
+    const outDir = path.dirname(pdfAbs);
+
+    if (!fsSync.existsSync(pptAbs)) {
+      return null;
+    }
+    if (fsSync.existsSync(pdfAbs)) {
+      return pdfAbs;
+    }
+
+    // 1. Try LibreOffice (primary cross-platform converter, standard on Linux production)
+    try {
+      await convertWithSoffice(pptAbs, outDir);
+      if (fsSync.existsSync(pdfAbs)) {
+        console.log('[pptController] Successfully converted presentation to PDF via LibreOffice:', pdfRel);
+        return pdfAbs;
+      }
+    } catch (sofficeErr) {
+      // 2. If Windows and LibreOffice is not installed, fallback to PowerShell PowerPoint COM
+      if (process.platform === 'win32') {
+        try {
+          await convertWithPowerShell(pptAbs, pdfAbs);
+          if (fsSync.existsSync(pdfAbs)) {
+            console.log('[pptController] Successfully converted presentation to PDF via PowerShell:', pdfRel);
+            return pdfAbs;
+          }
+        } catch (psErr) {
+          console.warn('[pptController] PowerShell conversion fallback failed:', psErr.message);
+        }
+      } else {
+        console.warn('[pptController] LibreOffice conversion warning:', sofficeErr.message);
+      }
+    }
+  } catch (err) {
+    console.warn('[pptController] PPT conversion failed:', err.message);
+  }
+  return null;
 }
 
 const PPT_MAX_SIZE_MB = Number(process.env.PPT_MAX_SIZE_MB || 50);
