@@ -1,130 +1,388 @@
-/* ===== PREMIUM BUTTON ===== */
-.premium-btn {
-  background: linear-gradient(135deg, #324e31, #047857); /* dark green */
-  color: #ffffff;
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 6px 18px rgba(6, 95, 70, 0.3);
-  position: relative;
-  overflow: hidden;
-}
+/* =========================================
+   FOLIOMAX SUBSCRIPTION UI
+   Existing brand colours preserved
+========================================= */
 
-/* HOVER EFFECT */
-.premium-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 12px 25px rgba(6, 95, 70, 0.45);
-}
-
-/* CLICK EFFECT */
-.premium-btn:active {
-  transform: scale(0.97);
-}
-
-/* SUBSCRIBE BUTTON (OUTLINE STYLE) */
-.premium-btn.outline {
-  background: transparent;
-  color: #065f46;
-  border: 2px solid #065f46;
-  box-shadow: none;
-}
-
-/* OUTLINE HOVER */
-.premium-btn.outline:hover {
-  background: linear-gradient(135deg, #324e31, #047857);
-  color: #ffffff;
-}
-
-/* OPTIONAL GLOW EFFECT */
-.premium-btn::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: rgba(255,255,255,0.2);
-  transform: skewX(-20deg);
-  transition: 0.5s;
-}
-
-.premium-btn:hover::after {
-  left: 130%;
-}
-
-
-
-/* ===== CARD DESIGN UPGRADE ===== */
+/* RESOURCE CARD */
 .fm-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  padding: 25px;
-  transition: all 0.35s ease;
-  border: 1px solid rgba(0,0,0,0.06);
+  --fm-green-dark: #324e31;
+  --fm-green: #047857;
+  --fm-green-bright: #10b981;
+
   position: relative;
+  height: 100%;
+  min-height: 100%;
+  padding: 27px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid rgba(50, 78, 49, 0.12);
+  border-radius: 15px;
   overflow: hidden;
+  box-shadow: 0 5px 20px rgba(30, 50, 35, 0.045);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
-/* HOVER MAGIC */
-.fm-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-}
-
-/* TOP GLOW LINE */
+/* Small brand accent instead of a full-width gradient strip */
 .fm-card::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
+  left: 27px;
+  width: 42px;
   height: 4px;
-  width: 100%;
-  background: linear-gradient(90deg, #10b981, #047857);
+  background: linear-gradient(90deg, #324e31, #10b981);
+  border-radius: 0 0 5px 5px;
+}
+
+.fm-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(50, 78, 49, 0.28);
+  box-shadow: 0 16px 38px rgba(30, 50, 35, 0.11);
+}
+
+/* RESOURCE TYPE + PLAN BADGES */
+.fm-card h6 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 20px;
+}
+
+.fm-card h6 > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 4px 10px !important;
+  border-radius: 5px !important;
+  letter-spacing: 0.5px;
 }
 
 .fm-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25px;
+  padding: 4px 10px;
+  margin-left: 0;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 5px;
   background: linear-gradient(135deg, #facc15, #f59e0b);
   color: #000;
   font-size: 11px;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 20px;
-  margin-left: 8px;
-}
-
-.premium-btn {
-  background: linear-gradient(135deg, #10b981, #324e31);
-  color: #fff;
-  padding: 12px 22px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
   letter-spacing: 0.3px;
 }
 
-/* HOVER = WOW */
+/* CARD CONTENT */
+.fm-card h3 {
+  margin-bottom: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.fm-card .fm-subtext {
+  margin-bottom: 12px;
+  color: #68736a;
+}
+
+.fm-card > p:not(.fm-subtext) {
+  color: #626b63 !important;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+/* COURSE THUMBNAILS */
+.fm-card > img {
+  width: 100%;
+  height: 175px !important;
+  object-fit: cover;
+  border-radius: 9px !important;
+  margin-bottom: 18px !important;
+  background: #f5f7f3;
+  transition: transform 0.35s ease;
+}
+
+.fm-card:hover > img {
+  transform: scale(1.015);
+}
+
+/* FEATURE LIST */
+.fm-points {
+  list-style: none;
+  padding: 15px 0 0;
+  margin: auto 0 18px;
+  border-top: 1px solid rgba(50, 78, 49, 0.10);
+}
+
+.fm-points li {
+  position: relative;
+  padding: 5px 0 5px 23px;
+  color: #536056;
+  line-height: 1.5;
+}
+
+.fm-points li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  color: #047857;
+  font-weight: 700;
+}
+
+/* BUTTON CONTAINER */
+.fm-card .btn-box {
+  margin-top: 15px !important;
+  padding-top: 15px;
+  border-top: 1px solid rgba(50, 78, 49, 0.08);
+}
+
+.fm-card .premium-btn {
+  width: 100%;
+}
+
+/* =========================================
+   BUTTON SYSTEM
+========================================= */
+
+.premium-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 21px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #324e31, #047857);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 5px 13px rgba(6, 95, 70, 0.17);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
 .premium-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 40px rgba(16, 185, 129, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 9px 20px rgba(6, 95, 70, 0.25);
+  color: #fff;
 }
 
-/* CTA PULSE */
+.premium-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.premium-btn:focus-visible {
+  outline: 3px solid rgba(16, 185, 129, 0.35);
+  outline-offset: 3px;
+}
+
+.premium-btn.outline {
+  background: transparent;
+  color: #065f46;
+  border: 1px solid #065f46;
+  box-shadow: none;
+}
+
+.premium-btn.outline:hover {
+  background: linear-gradient(135deg, #324e31, #047857);
+  color: #fff;
+}
+
+/* Unlock button: no continuous pulse */
 .premium-btn.cta {
-  animation: pulse 2s infinite;
+  animation: none;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
-  70% { box-shadow: 0 0 0 15px rgba(16,185,129,0); }
-  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+/* =========================================
+   RESPONSIVE CARD SPACING
+========================================= */
+
+@media (max-width: 991px) {
+  .fm-card {
+    padding: 23px;
+  }
+}
+
+@media (max-width: 575px) {
+  .fm-card {
+    padding: 21px;
+    border-radius: 12px;
+  }
+
+  .fm-card::before {
+    left: 21px;
+  }
+
+  .fm-card > img {
+    height: 155px !important;
+  }
+
+  .fm-card .premium-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fm-card,
+  .fm-card > img,
+  .premium-btn {
+    transition: none;
+  }
+}
+/* =========================================
+   SYMMETRICAL SUBSCRIPTION CARD GRID
+========================================= */
+
+/* Equal-height grid columns */
+.service-section .row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.service-section .service-block {
+  display: flex;
+  margin-bottom: 30px;
+}
+
+/* Full-height card wrapper */
+.service-section .service-block-one {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Uniform card dimensions */
+.service-section .fm-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 440px;
+  padding: 25px;
+
+  background: #fff;
+  border: 1px solid rgba(50, 78, 49, 0.12);
+  border-radius: 14px;
+
+  box-shadow: 0 5px 18px rgba(30, 50, 35, 0.05);
+
+  /* No movement on hover */
+  transform: none !important;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* Keep hover dimensions identical */
+.service-section .fm-card:hover {
+  transform: none !important;
+  border-color: rgba(50, 78, 49, 0.28);
+  box-shadow: 0 9px 25px rgba(30, 50, 35, 0.09);
+}
+
+/* Consistent card header */
+.service-section .fm-card > h6 {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  gap: 9px;
+  margin-bottom: 20px;
+}
+
+/* Consistent title area */
+.service-section .fm-card > h3 {
+  min-height: 54px;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+/* Description area */
+.service-section .fm-card > .fm-subtext {
+  min-height: 42px;
+  margin-bottom: 12px;
+}
+
+/* Uniform feature list */
+.service-section .fm-card > .fm-points {
+  margin-top: auto;
+  min-height: 112px;
+  padding-top: 15px;
+  margin-bottom: 0;
+  border-top: 1px solid rgba(50, 78, 49, 0.10);
+}
+
+/* Consistent feature spacing */
+.service-section .fm-points li {
+  padding: 5px 0 5px 23px;
+  line-height: 1.5;
+}
+
+/* Align all buttons at the same bottom position */
+.service-section .fm-card > .btn-box {
+  display: flex;
+  align-items: center;
+  margin-top: 18px !important;
+  padding-top: 15px;
+  min-height: 65px;
+  border-top: 1px solid rgba(50, 78, 49, 0.08);
+}
+
+.service-section .fm-card > .btn-box .premium-btn {
+  width: 100%;
+  min-height: 43px;
+  transform: none !important;
+}
+
+/* Prevent button hover from changing card alignment */
+.service-section .fm-card > .btn-box .premium-btn:hover {
+  transform: none !important;
+}
+
+/* Keep course images consistent */
+.service-section .fm-card > img {
+  width: 100%;
+  height: 170px !important;
+  min-height: 170px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px !important;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+  .service-section .fm-card {
+    min-height: 430px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 575px) {
+  .service-section .fm-card {
+    min-height: 0;
+    padding: 21px;
+  }
+
+  .service-section .fm-card > h3 {
+    min-height: 0;
+  }
+
+  .service-section .fm-card > .fm-subtext {
+    min-height: 0;
+  }
+
+  .service-section .fm-card > .fm-points {
+    min-height: 0;
+    margin-top: 15px;
+  }
 }

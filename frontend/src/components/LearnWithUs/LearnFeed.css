@@ -91,3 +91,77 @@
     max-width: 320px;
   }
 }
+/* =========================================
+   LEARN FEED - LAYOUT REFINEMENT
+========================================= */
+
+.lfeed {
+  padding: 0 0 25px;
+}
+
+.lfd-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+/* Pagination */
+
+.lfeed-more {
+  margin-top: 42px;
+}
+
+.lfeed-more-btn {
+  min-width: 175px;
+  padding: 14px 30px;
+  border-radius: 10px;
+}
+
+.lfeed-end {
+  margin-top: 38px;
+  padding: 16px 0;
+}
+
+/* Loading and error states */
+
+.lwu-empty {
+  max-width: 750px;
+  margin: 15px auto;
+  padding: 65px 25px;
+  border-radius: 18px;
+  background: var(--lwu-surface);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.035);
+}
+
+.lfeed-retry {
+  border-radius: 10px;
+  padding: 13px 28px;
+}
+
+/* Tablet */
+
+@media (max-width: 1024px) {
+  .lfd-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .lfd-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .lfeed {
+    padding-bottom: 15px;
+  }
+
+  .lfeed-more {
+    margin-top: 30px;
+  }
+}

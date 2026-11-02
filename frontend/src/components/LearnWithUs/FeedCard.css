@@ -275,3 +275,219 @@
     transform: none;
   }
 }
+/* =========================================
+   FEED CARDS - REFINED DESIGN
+========================================= */
+
+.lfd-card {
+  height: 100%;
+  min-width: 0;
+  border-radius: 17px;
+  background: var(--lwu-surface);
+  border: 1px solid rgba(var(--lwu-border-rgb), 0.85);
+  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.045);
+  backdrop-filter: none;
+  transform: translateY(12px);
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.lfd-card:hover {
+  transform: none;
+  border-color: rgba(var(--lwu-theme-rgb), 0.3);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.09);
+}
+
+/* Media */
+
+.lfd-media {
+  aspect-ratio: 16 / 9;
+  background: #edf3ee;
+}
+
+.lfd-media-img,
+.lfd-media-video {
+  transition: transform 0.4s ease;
+}
+
+.lfd-card:hover .lfd-media-img,
+.lfd-card:hover .lfd-media-video {
+  transform: scale(1.035);
+}
+
+/* Softer placeholder for content without thumbnails */
+
+.lfd-media--quiz,
+.lfd-media--insight,
+.lfd-media--presentation {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--lwu-theme-rgb), 0.09),
+    rgba(var(--lwu-emerald-rgb), 0.16)
+  );
+}
+
+.lfd-media-placeholder {
+  background: transparent;
+  font-size: 54px;
+  opacity: 0.85;
+  filter: none;
+}
+
+/* Video keeps its dark background */
+
+.lfd-media--video {
+  background: #0f172a;
+}
+
+/* Type badge */
+
+.lfd-type-badge {
+  top: 14px;
+  left: 14px;
+  padding: 7px 13px;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.82);
+  font-size: 10px;
+  letter-spacing: 0.7px;
+}
+
+/* Play button */
+
+.lfd-play {
+  width: 56px;
+  height: 56px;
+  font-size: 18px;
+}
+
+/* Card body */
+
+.lfd-body {
+  padding: 22px 23px 24px;
+  min-height: 245px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lfd-category {
+  margin-bottom: 13px;
+  padding: 6px 11px;
+  border-radius: 6px;
+  font-size: 10px;
+  letter-spacing: 0.55px;
+  background: rgba(var(--lwu-theme-rgb), 0.055);
+  color: var(--lwu-theme);
+}
+
+/* Title */
+
+.lfd-title {
+  min-height: 51px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 700;
+  -webkit-line-clamp: 2;
+}
+
+/* Description */
+
+.lfd-excerpt {
+  min-height: 68px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-line-clamp: 3;
+}
+
+/* Metadata */
+
+.lfd-meta {
+  min-height: 37px;
+  margin-top: auto;
+  margin-bottom: 15px;
+  padding-bottom: 14px;
+  gap: 7px;
+  font-size: 12px;
+}
+
+/* Action */
+
+.lfd-cta {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(var(--lwu-border-rgb), 0.75);
+  font-size: 13px;
+  color: var(--lwu-theme);
+}
+
+/* Skeleton */
+
+.lfd-skeleton {
+  border-radius: 17px;
+  background: var(--lwu-surface);
+  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.035);
+}
+
+.lfd-skeleton-body {
+  padding: 23px;
+}
+
+.lfd-skeleton-media {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--lwu-border-rgb), 0.35) 25%,
+    rgba(var(--lwu-border-rgb), 0.7) 37%,
+    rgba(var(--lwu-border-rgb), 0.35) 63%
+  );
+  background-size: 400% 100%;
+}
+
+/* Tablet */
+
+@media (max-width: 1024px) {
+  .lfd-body {
+    min-height: 235px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .lfd-card {
+    border-radius: 15px;
+  }
+
+  .lfd-body {
+    min-height: auto;
+    padding: 19px;
+  }
+
+  .lfd-title {
+    min-height: 0;
+    font-size: 17px;
+  }
+
+  .lfd-excerpt {
+    min-height: 0;
+  }
+
+  .lfd-meta {
+    margin-top: 5px;
+  }
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .lfd-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .lfd-card:hover {
+    transform: none;
+  }
+}

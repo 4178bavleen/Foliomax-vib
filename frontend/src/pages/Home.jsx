@@ -22,7 +22,7 @@ export default function Home() {
       <Calculator/>
       {/* <PopularPair/> */}
       <Nifty50FullChart/>
-      <PopularStocks/>
+      {/* <PopularStocks/> */}
       <PayoutSystem/>
       <ChooseUs/>
       <Testimonial/>

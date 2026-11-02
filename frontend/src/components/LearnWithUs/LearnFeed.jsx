@@ -51,6 +51,11 @@ function LearnFeed() {
 
     try {
       const res = await fetch(`${API_BASE}/foliomax/learn/feed?${params}`);
+
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+      }
+
       const json = await res.json();
 
       if (requestId !== requestIdRef.current) return;
